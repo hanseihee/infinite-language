@@ -15,7 +15,8 @@ export default function WordSelector({ words, onWordsChange }: WordSelectorProps
   const playBeep = () => {
     try {
       // Web Audio API를 사용한 비프음
-      const audioContext = new (window.AudioContext || (window as any).webkitAudioContext)();
+      const AudioContextClass = window.AudioContext || (window as typeof window & {webkitAudioContext: typeof AudioContext}).webkitAudioContext;
+      const audioContext = new AudioContextClass();
       const oscillator = audioContext.createOscillator();
       const gainNode = audioContext.createGain();
       
@@ -28,7 +29,7 @@ export default function WordSelector({ words, onWordsChange }: WordSelectorProps
       
       oscillator.start(audioContext.currentTime);
       oscillator.stop(audioContext.currentTime + 0.1);
-    } catch (error) {
+    } catch {
       console.log('Audio not supported');
     }
   };
