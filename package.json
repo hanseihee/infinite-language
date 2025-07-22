@@ -9,6 +9,7 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "google-tts-api": "^2.0.2",
     "next": "15.4.2",
     "openai": "^5.10.1",
     "react": "19.1.0",

@@ -31,6 +31,7 @@ function QuizPageContent() {
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [showResults, setShowResults] = useState(false);
+  const [isPlayingTTS, setIsPlayingTTS] = useState(false);
 
   const generateSentences = useCallback(async () => {
     setIsLoading(true);
@@ -72,6 +73,24 @@ function QuizPageContent() {
     setCurrentAnswer(words.join(' '));
   };
 
+  const playTTS = async (text: string) => {
+    setIsPlayingTTS(true);
+    try {
+      const response = await fetch(`/api/tts?text=${encodeURIComponent(text)}&lang=en&slow=false`);
+      const data = await response.json();
+      
+      if (data.url) {
+        const audio = new Audio(data.url);
+        audio.onended = () => setIsPlayingTTS(false);
+        audio.onerror = () => setIsPlayingTTS(false);
+        await audio.play();
+      }
+    } catch (error) {
+      console.error('TTS 재생 실패:', error);
+      setIsPlayingTTS(false);
+    }
+  };
+
   const checkCurrentAnswer = () => {
     const currentSentence = sentences[currentSentenceIndex];
     const originalSentence = currentSentence.originalSentence
@@ -97,6 +116,10 @@ function QuizPageContent() {
     setAnswerResults(newResults);
 
     setShowFeedback(true);
+    
+    // 정답을 음성으로 읽어주기
+    playTTS(currentSentence.originalSentence);
+    
     return result;
   };
 
@@ -257,11 +280,19 @@ function QuizPageContent() {
                   ? 'bg-green-50 dark:bg-green-900/20 border border-green-200 dark:border-green-800' 
                   : 'bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800'
               }`}>
-                <div className="flex items-center mb-2">
-                  {answerResults[currentSentenceIndex].isCorrect ? (
-                    <span className="text-green-700 dark:text-green-300 font-semibold">✓ 정답입니다!</span>
-                  ) : (
-                    <span className="text-red-700 dark:text-red-300 font-semibold">✗ 틀렸습니다</span>
+                <div className="flex items-center justify-between mb-2">
+                  <div className="flex items-center">
+                    {answerResults[currentSentenceIndex].isCorrect ? (
+                      <span className="text-green-700 dark:text-green-300 font-semibold">✓ 정답입니다!</span>
+                    ) : (
+                      <span className="text-red-700 dark:text-red-300 font-semibold">✗ 틀렸습니다</span>
+                    )}
+                  </div>
+                  {isPlayingTTS && (
+                    <div className="flex items-center text-blue-600 dark:text-blue-400">
+                      <div className="animate-pulse mr-2">🔊</div>
+                      <span className="text-sm">음성 재생 중...</span>
+                    </div>
                   )}
                 </div>
                 <div className="space-y-1 text-sm">
@@ -273,6 +304,9 @@ function QuizPageContent() {
                       <strong>정답:</strong> {answerResults[currentSentenceIndex].correctAnswer}
                     </p>
                   )}
+                  <p className="text-gray-600 dark:text-gray-400 text-xs mt-2">
+                    🔊 정답을 음성으로 들어보세요
+                  </p>
                 </div>
               </div>
             )}
