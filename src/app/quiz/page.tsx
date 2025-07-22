@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback, Suspense } from 'react';
 import { useSearchParams } from 'next/navigation';
 import WordDragDrop from '@/components/WordDragDrop';
 
@@ -17,7 +17,7 @@ interface AnswerResult {
   correctAnswer: string;
 }
 
-export default function QuizPage() {
+function QuizPageContent() {
   const searchParams = useSearchParams();
   const difficulty = searchParams.get('difficulty');
   const environment = searchParams.get('environment');
@@ -32,13 +32,7 @@ export default function QuizPage() {
   const [error, setError] = useState<string | null>(null);
   const [showResults, setShowResults] = useState(false);
 
-  useEffect(() => {
-    if (difficulty && environment) {
-      generateSentences();
-    }
-  }, [difficulty, environment]);
-
-  const generateSentences = async () => {
+  const generateSentences = useCallback(async () => {
     setIsLoading(true);
     setError(null);
     
@@ -66,7 +60,13 @@ export default function QuizPage() {
     } finally {
       setIsLoading(false);
     }
-  };
+  }, [difficulty, environment]);
+
+  useEffect(() => {
+    if (difficulty && environment) {
+      generateSentences();
+    }
+  }, [difficulty, environment, generateSentences]);
 
   const handleWordsChange = (words: string[]) => {
     setCurrentAnswer(words.join(' '));
@@ -301,5 +301,20 @@ export default function QuizPage() {
         </div>
       </div>
     </div>
+  );
+}
+
+export default function QuizPage() {
+  return (
+    <Suspense fallback={
+      <div className="min-h-screen flex items-center justify-center">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-32 w-32 border-b-2 border-blue-500 mx-auto mb-4"></div>
+          <p className="text-lg">페이지를 로딩하고 있습니다...</p>
+        </div>
+      </div>
+    }>
+      <QuizPageContent />
+    </Suspense>
   );
 }
