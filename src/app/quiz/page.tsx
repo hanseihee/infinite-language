@@ -201,6 +201,13 @@ function QuizPageContent() {
     return result;
   };
 
+  const handleTTSClick = () => {
+    if (isPlayingTTS) return; // 이미 재생 중이면 무시
+    
+    const currentSentence = sentences[currentSentenceIndex];
+    playTTS(currentSentence.originalSentence);
+  };
+
   const goToNextSentence = () => {
     if (!showFeedback) {
       checkCurrentAnswer();
@@ -382,9 +389,20 @@ function QuizPageContent() {
                       <strong>정답:</strong> {answerResults[currentSentenceIndex].correctAnswer}
                     </p>
                   )}
-                  <p className="text-gray-600 dark:text-gray-400 text-xs mt-2">
-                    🔊 정답을 음성으로 들어보세요
-                  </p>
+                  <button
+                    onClick={handleTTSClick}
+                    disabled={isPlayingTTS}
+                    className={`text-xs mt-2 flex items-center space-x-1 transition-colors ${
+                      isPlayingTTS 
+                        ? 'text-blue-400 dark:text-blue-500 cursor-not-allowed' 
+                        : 'text-blue-600 dark:text-blue-400 hover:text-blue-800 dark:hover:text-blue-300 cursor-pointer'
+                    }`}
+                  >
+                    <span className={isPlayingTTS ? 'animate-pulse' : ''}>🔊</span>
+                    <span className="underline">
+                      {isPlayingTTS ? '음성 재생 중...' : '정답을 음성으로 들어보세요'}
+                    </span>
+                  </button>
                 </div>
               </div>
             )}
