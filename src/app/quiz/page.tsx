@@ -2,7 +2,7 @@
 
 import { useState, useEffect, useCallback, Suspense } from 'react';
 import { useSearchParams } from 'next/navigation';
-import WordDragDrop from '@/components/WordDragDrop';
+import WordSelector from '@/components/WordSelector';
 
 interface Sentence {
   id: number;
@@ -238,7 +238,7 @@ function QuizPageContent() {
               </p>
             </div>
             
-            <WordDragDrop
+            <WordSelector
               words={currentSentence.shuffledWords}
               onWordsChange={handleWordsChange}
             />
