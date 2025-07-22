@@ -15,13 +15,21 @@ export async function GET(request: NextRequest) {
   }
 
   try {
-    const url = googleTTS.getAudioUrl(text, {
+    // getAllAudioUrls를 사용해서 여러 URL 중 작동하는 것을 반환
+    const urls = googleTTS.getAllAudioUrls(text, {
       lang,
       slow,
       host: 'https://translate.google.com',
     });
 
-    return NextResponse.json({ url });
+    // 첫 번째 URL 반환 (대부분의 경우 작동)
+    const url = urls && urls.length > 0 ? urls[0].url : null;
+    
+    if (!url) {
+      throw new Error('No audio URL generated');
+    }
+
+    return NextResponse.json({ url, urls });
   } catch (error) {
     console.error('TTS Error:', error);
     return NextResponse.json(

@@ -75,19 +75,97 @@ function QuizPageContent() {
 
   const playTTS = async (text: string) => {
     setIsPlayingTTS(true);
+    
+    // 1순위: Web Speech API 시도 (브라우저 내장, 가장 안정적)
+    if (tryWebSpeechAPI(text)) {
+      return;
+    }
+    
+    // 2순위: Google TTS API 시도
     try {
       const response = await fetch(`/api/tts?text=${encodeURIComponent(text)}&lang=en&slow=false`);
       const data = await response.json();
       
+      if (data.error) {
+        console.error('TTS API 에러:', data.error);
+        setIsPlayingTTS(false);
+        return;
+      }
+      
       if (data.url) {
-        const audio = new Audio(data.url);
-        audio.onended = () => setIsPlayingTTS(false);
-        audio.onerror = () => setIsPlayingTTS(false);
-        await audio.play();
+        const audio = new Audio();
+        
+        const playbackTimeout = setTimeout(() => {
+          console.warn('TTS playback timeout');
+          audio.pause();
+          setIsPlayingTTS(false);
+        }, 10000);
+        
+        // 오디오 이벤트 리스너 설정
+        audio.onended = () => {
+          clearTimeout(playbackTimeout);
+          setIsPlayingTTS(false);
+        };
+        
+        audio.onerror = (e) => {
+          console.error('Audio playback error:', e);
+          clearTimeout(playbackTimeout);
+          setIsPlayingTTS(false);
+        };
+        
+        audio.onloadeddata = () => {
+          // 로드되면 바로 재생 시도
+          audio.play().catch((playError) => {
+            console.error('Play failed:', playError);
+            setIsPlayingTTS(false);
+          });
+        };
+        
+        
+        // 오디오 소스 설정
+        audio.src = data.url;
+        audio.load();
+      } else {
+        throw new Error('No audio URL received');
       }
     } catch (error) {
       console.error('TTS 재생 실패:', error);
       setIsPlayingTTS(false);
+    }
+  };
+
+  const tryWebSpeechAPI = (text: string): boolean => {
+    // Web Speech API 지원 확인
+    if (!('speechSynthesis' in window)) {
+      console.log('Web Speech API not supported');
+      return false;
+    }
+
+    try {
+      // 기존 음성 중지
+      speechSynthesis.cancel();
+      
+      const utterance = new SpeechSynthesisUtterance(text);
+      utterance.lang = 'en-US';
+      utterance.rate = 0.9;
+      utterance.pitch = 1;
+      utterance.volume = 1;
+      
+      utterance.onend = () => {
+        setIsPlayingTTS(false);
+      };
+      
+      utterance.onerror = (event) => {
+        console.error('Web Speech API error:', event.error);
+        setIsPlayingTTS(false);
+        return false;
+      };
+      
+      speechSynthesis.speak(utterance);
+      return true;
+    } catch (error) {
+      console.error('Web Speech API failed:', error);
+      return false;
     }
   };
 
