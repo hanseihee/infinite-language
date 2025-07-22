@@ -8,6 +8,13 @@ interface Sentence {
   id: number;
   shuffledWords: string[];
   originalSentence: string;
+  koreanTranslation: string;
+}
+
+interface AnswerResult {
+  isCorrect: boolean;
+  userAnswer: string;
+  correctAnswer: string;
 }
 
 export default function QuizPage() {
@@ -18,6 +25,9 @@ export default function QuizPage() {
   const [sentences, setSentences] = useState<Sentence[]>([]);
   const [currentSentenceIndex, setCurrentSentenceIndex] = useState(0);
   const [userAnswers, setUserAnswers] = useState<string[]>([]);
+  const [answerResults, setAnswerResults] = useState<AnswerResult[]>([]);
+  const [currentAnswer, setCurrentAnswer] = useState<string>('');
+  const [showFeedback, setShowFeedback] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [showResults, setShowResults] = useState(false);
@@ -59,14 +69,47 @@ export default function QuizPage() {
   };
 
   const handleWordsChange = (words: string[]) => {
+    setCurrentAnswer(words.join(' '));
+  };
+
+  const checkCurrentAnswer = () => {
+    const currentSentence = sentences[currentSentenceIndex];
+    const originalSentence = currentSentence.originalSentence
+      .replace(/[?!.]/g, '')
+      .toLowerCase()
+      .trim();
+    const userSentence = currentAnswer.toLowerCase().trim();
+    
+    const isCorrect = originalSentence === userSentence;
+    
+    const result: AnswerResult = {
+      isCorrect,
+      userAnswer: currentAnswer,
+      correctAnswer: currentSentence.originalSentence
+    };
+
     const newAnswers = [...userAnswers];
-    newAnswers[currentSentenceIndex] = words.join(' ');
+    newAnswers[currentSentenceIndex] = currentAnswer;
     setUserAnswers(newAnswers);
+
+    const newResults = [...answerResults];
+    newResults[currentSentenceIndex] = result;
+    setAnswerResults(newResults);
+
+    setShowFeedback(true);
+    return result;
   };
 
   const goToNextSentence = () => {
+    if (!showFeedback) {
+      checkCurrentAnswer();
+      return;
+    }
+
     if (currentSentenceIndex < sentences.length - 1) {
       setCurrentSentenceIndex(currentSentenceIndex + 1);
+      setCurrentAnswer('');
+      setShowFeedback(false);
     } else {
       setShowResults(true);
     }
@@ -75,18 +118,16 @@ export default function QuizPage() {
   const goToPrevSentence = () => {
     if (currentSentenceIndex > 0) {
       setCurrentSentenceIndex(currentSentenceIndex - 1);
+      setCurrentAnswer(userAnswers[currentSentenceIndex - 1] || '');
+      setShowFeedback(false);
     }
   };
 
-  const checkAnswers = () => {
-    return userAnswers.map((answer, index) => {
-      const originalSentence = sentences[index].originalSentence
-        .replace(/[?!.]/g, '')
-        .toLowerCase();
-      const userSentence = answer.toLowerCase();
-      return originalSentence === userSentence;
-    });
-  };
+  useEffect(() => {
+    if (sentences.length > 0) {
+      setCurrentAnswer(userAnswers[currentSentenceIndex] || '');
+    }
+  }, [currentSentenceIndex, sentences, userAnswers]);
 
   if (isLoading) {
     return (
@@ -116,8 +157,7 @@ export default function QuizPage() {
   }
 
   if (showResults) {
-    const results = checkAnswers();
-    const correctCount = results.filter(Boolean).length;
+    const correctCount = answerResults.filter(result => result.isCorrect).length;
     
     return (
       <div className="min-h-screen bg-gray-50 dark:bg-gray-900 py-8">
@@ -135,19 +175,19 @@ export default function QuizPage() {
             </div>
 
             <div className="space-y-6">
-              {sentences.map((sentence, index) => (
-                <div key={sentence.id} className="border border-gray-200 dark:border-gray-700 rounded-lg p-4">
+              {answerResults.map((result, index) => (
+                <div key={index} className="border border-gray-200 dark:border-gray-700 rounded-lg p-4">
                   <div className="flex items-center mb-2">
                     <span className="text-lg font-semibold mr-2">문제 {index + 1}</span>
-                    {results[index] ? (
+                    {result.isCorrect ? (
                       <span className="text-green-500">✓ 정답</span>
                     ) : (
                       <span className="text-red-500">✗ 오답</span>
                     )}
                   </div>
                   <div className="space-y-2">
-                    <p><strong>정답:</strong> {sentence.originalSentence}</p>
-                    <p><strong>당신의 답:</strong> {userAnswers[index] || '(답하지 않음)'}</p>
+                    <p><strong>정답:</strong> {result.correctAnswer}</p>
+                    <p><strong>당신의 답:</strong> {result.userAnswer || '(답하지 않음)'}</p>
                   </div>
                 </div>
               ))}
@@ -191,16 +231,49 @@ export default function QuizPage() {
               문제 {currentSentenceIndex + 1}: 아래 단어들을 올바른 순서로 배열하세요
             </h2>
             
+            {/* 한국어 힌트 */}
+            <div className="mb-6 p-3 bg-yellow-50 dark:bg-yellow-900/20 border border-yellow-200 dark:border-yellow-800 rounded-lg">
+              <p className="text-yellow-800 dark:text-yellow-200">
+                <strong>💡 힌트 (한국어):</strong> {currentSentence.koreanTranslation}
+              </p>
+            </div>
+            
             <WordDragDrop
               words={currentSentence.shuffledWords}
               onWordsChange={handleWordsChange}
             />
 
-            {userAnswers[currentSentenceIndex] && (
+            {currentAnswer && (
               <div className="mt-4 p-3 bg-blue-50 dark:bg-blue-900/20 rounded-lg">
                 <p className="text-blue-800 dark:text-blue-200">
-                  <strong>현재 답:</strong> {userAnswers[currentSentenceIndex]}
+                  <strong>현재 답:</strong> {currentAnswer}
                 </p>
+              </div>
+            )}
+
+            {showFeedback && answerResults[currentSentenceIndex] && (
+              <div className={`mt-4 p-4 rounded-lg ${
+                answerResults[currentSentenceIndex].isCorrect 
+                  ? 'bg-green-50 dark:bg-green-900/20 border border-green-200 dark:border-green-800' 
+                  : 'bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800'
+              }`}>
+                <div className="flex items-center mb-2">
+                  {answerResults[currentSentenceIndex].isCorrect ? (
+                    <span className="text-green-700 dark:text-green-300 font-semibold">✓ 정답입니다!</span>
+                  ) : (
+                    <span className="text-red-700 dark:text-red-300 font-semibold">✗ 틀렸습니다</span>
+                  )}
+                </div>
+                <div className="space-y-1 text-sm">
+                  <p className={answerResults[currentSentenceIndex].isCorrect ? 'text-green-700 dark:text-green-300' : 'text-red-700 dark:text-red-300'}>
+                    <strong>당신의 답:</strong> {answerResults[currentSentenceIndex].userAnswer}
+                  </p>
+                  {!answerResults[currentSentenceIndex].isCorrect && (
+                    <p className="text-green-700 dark:text-green-300">
+                      <strong>정답:</strong> {answerResults[currentSentenceIndex].correctAnswer}
+                    </p>
+                  )}
+                </div>
               </div>
             )}
           </div>
@@ -216,10 +289,13 @@ export default function QuizPage() {
             
             <button
               onClick={goToNextSentence}
-              disabled={!userAnswers[currentSentenceIndex]}
+              disabled={!currentAnswer}
               className="bg-blue-500 hover:bg-blue-700 disabled:bg-blue-300 text-white font-bold py-2 px-4 rounded disabled:cursor-not-allowed"
             >
-              {currentSentenceIndex === sentences.length - 1 ? '결과 보기' : '다음'}
+              {showFeedback ? 
+                (currentSentenceIndex === sentences.length - 1 ? '결과 보기' : '다음 문제') 
+                : '답안 확인'
+              }
             </button>
           </div>
         </div>

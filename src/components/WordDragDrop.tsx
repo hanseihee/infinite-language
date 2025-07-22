@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import {
   DndContext,
   closestCenter,
@@ -59,9 +59,17 @@ interface WordDragDropProps {
 
 export default function WordDragDrop({ words, onWordsChange }: WordDragDropProps) {
   const [items, setItems] = useState(words.map((word, index) => ({
-    id: `word-${index}`,
+    id: `word-${index}-${Math.random()}`, // Add random key to ensure uniqueness
     word
   })));
+
+  // Update items when words prop changes (for different sentences)
+  useEffect(() => {
+    setItems(words.map((word, index) => ({
+      id: `word-${index}-${Math.random()}`,
+      word
+    })));
+  }, [words]);
 
   const sensors = useSensors(
     useSensor(PointerSensor),
