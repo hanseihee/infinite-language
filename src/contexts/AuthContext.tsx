@@ -43,9 +43,22 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   }, []);
 
   const signInWithGoogle = async () => {
-    // 현재 환경에 맞는 리다이렉트 URL 생성
-    const redirectTo = `${window.location.origin}/auth/callback`;
-    console.log('OAuth redirectTo:', redirectTo); // 디버깅용
+    // 환경별 리다이렉트 URL 설정
+    const getRedirectUrl = () => {
+      const currentOrigin = window.location.origin;
+      
+      // 배포 환경 감지
+      if (currentOrigin.includes('vercel.app') || currentOrigin.includes('infinite-language-one.vercel.app')) {
+        return 'https://infinite-language-one.vercel.app/auth/callback';
+      }
+      
+      // 로컬 개발 환경
+      return `${currentOrigin}/auth/callback`;
+    };
+
+    const redirectTo = getRedirectUrl();
+    console.log('Current origin:', window.location.origin);
+    console.log('OAuth redirectTo:', redirectTo);
     
     const { error } = await supabase.auth.signInWithOAuth({
       provider: 'google',

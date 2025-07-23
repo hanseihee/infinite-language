@@ -6,8 +6,22 @@ export async function GET(request: NextRequest) {
   const code = requestUrl.searchParams.get('code');
   const error = requestUrl.searchParams.get('error');
 
-  // 현재 요청의 호스트 정보를 사용하여 올바른 리다이렉트 URL 생성
-  const baseUrl = `${requestUrl.protocol}//${requestUrl.host}`;
+  // 환경별 리다이렉트 URL 생성
+  const getBaseUrl = () => {
+    const host = requestUrl.host;
+    
+    // Vercel 배포 환경
+    if (host.includes('vercel.app') || host.includes('infinite-language-one.vercel.app')) {
+      return 'https://infinite-language-one.vercel.app';
+    }
+    
+    // 로컬 개발 환경
+    return `${requestUrl.protocol}//${host}`;
+  };
+
+  const baseUrl = getBaseUrl();
+  console.log('Callback - Request host:', requestUrl.host);
+  console.log('Callback - Redirect baseUrl:', baseUrl);
 
   // OAuth 에러 체크
   if (error) {
