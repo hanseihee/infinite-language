@@ -60,19 +60,19 @@ export default function Home() {
   return (
     <>
       <Header />
-      <main className="min-h-screen" style={{backgroundColor: '#14171D'}}>
-        <div className="container mx-auto px-4 sm:px-6 lg:px-8 pt-16 pb-24">
+      <main className="min-h-screen w-full overflow-x-hidden" style={{backgroundColor: '#14171D'}}>
+        <div className="max-w-7xl mx-auto px-3 sm:px-6 lg:px-8 pt-6 sm:pt-12 pb-16">
           
-          <h1 className="gradient-title text-4xl sm:text-5xl lg:text-7xl font-bold text-center mb-16 py-6 leading-tight font-['Inter',_'Pretendard',_sans-serif] tracking-tight">
+          <h1 className="gradient-title text-3xl sm:text-5xl lg:text-7xl font-bold text-center mb-8 sm:mb-12 py-4 leading-tight font-['Inter',_'Pretendard',_sans-serif] tracking-tight">
             Infinite Language
           </h1>
         
           {/* 드롭다운 메뉴 섹션 */}
-          <div className="max-w-4xl mx-auto mb-12">
-            <div className="rounded-2xl shadow-2xl p-6 sm:p-8" style={{backgroundColor: '#191D24'}}>
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6 sm:gap-8">
-                <div className="space-y-3">
-                  <label className="block text-lg font-semibold text-slate-200 dark:text-slate-300">
+          <div className="max-w-4xl mx-auto mb-8">
+            <div className="rounded-2xl shadow-2xl p-4 sm:p-6 lg:p-8" style={{backgroundColor: '#191D24'}}>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-6">
+                <div className="space-y-2">
+                  <label className="block text-base sm:text-lg font-semibold text-slate-200 dark:text-slate-300">
                     난이도 선택
                   </label>
                   <Dropdown
@@ -83,8 +83,8 @@ export default function Home() {
                   />
                 </div>
                 
-                <div className="space-y-3">
-                  <label className="block text-lg font-semibold text-slate-200 dark:text-slate-300">
+                <div className="space-y-2">
+                  <label className="block text-base sm:text-lg font-semibold text-slate-200 dark:text-slate-300">
                     환경 선택
                   </label>
                   <Dropdown
@@ -98,8 +98,8 @@ export default function Home() {
                   />
                   
                   {/* 사용자 직접 입력 필드 */}
-                  <div className="mt-4">
-                    <label className="block text-base font-medium text-slate-400 dark:text-slate-500 mb-2">
+                  <div className="mt-3">
+                    <label className="block text-sm sm:text-base font-medium text-slate-400 dark:text-slate-500 mb-2">
                       또는 직접 입력하세요
                     </label>
                     <input
@@ -126,14 +126,14 @@ export default function Home() {
               
               {/* 선택된 옵션 표시 */}
               {(selectedDifficulty || finalEnvironment) && (
-                <div className="mt-8 p-5 rounded-xl" style={{backgroundColor: '#252B36'}}>
-                  <h3 className="text-lg font-semibold mb-3 text-slate-200 dark:text-slate-300">
+                <div className="mt-6 p-4 rounded-xl" style={{backgroundColor: '#252B36'}}>
+                  <h3 className="text-base sm:text-lg font-semibold mb-2 text-slate-200 dark:text-slate-300">
                     선택된 설정
                   </h3>
-                  <div className="space-y-2 text-slate-300 dark:text-slate-400">
-                    {selectedDifficulty && <p className="text-base">난이도: <span className="font-medium text-white">{selectedDifficulty}</span></p>}
+                  <div className="space-y-1 text-slate-300 dark:text-slate-400">
+                    {selectedDifficulty && <p className="text-sm sm:text-base">난이도: <span className="font-medium text-white">{selectedDifficulty}</span></p>}
                     {finalEnvironment && (
-                      <p className="text-base">
+                      <p className="text-sm sm:text-base">
                         환경: <span className="font-medium text-white">{finalEnvironment}</span>
                         {customEnvironment.trim() && (
                           <span className="ml-2 text-xs bg-blue-600/80 dark:bg-blue-500/80 text-blue-100 dark:text-blue-200 px-2 py-1 rounded-full">
@@ -150,11 +150,11 @@ export default function Home() {
 
           {/* 액션 카드 섹션 */}
           <div className="max-w-4xl mx-auto">
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              <div className="p-6 sm:p-8 rounded-2xl shadow-2xl hover:shadow-3xl transition-shadow" style={{backgroundColor: '#191D24'}}>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-6">
+              <div className="p-4 sm:p-6 lg:p-8 rounded-2xl shadow-2xl hover:shadow-3xl transition-shadow" style={{backgroundColor: '#191D24'}}>
                 <div className="text-center">
-                  <h2 className="text-xl sm:text-2xl font-bold mb-4 text-slate-200 dark:text-slate-300">시작하기</h2>
-                  <p className="text-base text-slate-400 dark:text-slate-500 mb-6">
+                  <h2 className="text-lg sm:text-xl lg:text-2xl font-bold mb-3 text-slate-200 dark:text-slate-300">시작하기</h2>
+                  <p className="text-sm sm:text-base text-slate-400 dark:text-slate-500 mb-4 sm:mb-6">
                     언어 학습 여정을 시작해보세요
                   </p>
                   <button
@@ -169,7 +169,7 @@ export default function Home() {
                       }
                       window.location.href = `/quiz?difficulty=${selectedDifficulty}&environment=${encodeURIComponent(finalEnvironment)}`;
                     }}
-                    className="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 px-6 rounded-lg transition-all duration-200 disabled:bg-slate-600 text-base shadow-lg hover:shadow-xl"
+                    className="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-2.5 sm:py-3 px-4 sm:px-6 rounded-lg transition-all duration-200 disabled:bg-slate-600 text-sm sm:text-base shadow-lg hover:shadow-xl"
                     disabled={loading || !selectedDifficulty || !finalEnvironment}
                   >
                     퀴즈 시작하기
@@ -177,13 +177,13 @@ export default function Home() {
                 </div>
               </div>
               
-              <div className="p-6 sm:p-8 rounded-2xl shadow-2xl hover:shadow-3xl transition-shadow" style={{backgroundColor: '#191D24'}}>
+              <div className="p-4 sm:p-6 lg:p-8 rounded-2xl shadow-2xl hover:shadow-3xl transition-shadow" style={{backgroundColor: '#191D24'}}>
                 <div className="text-center">
-                  <h2 className="text-xl sm:text-2xl font-bold mb-4 text-slate-200 dark:text-slate-300">학습 진도</h2>
-                  <p className="text-base text-slate-400 dark:text-slate-500 mb-6">
+                  <h2 className="text-lg sm:text-xl lg:text-2xl font-bold mb-3 text-slate-200 dark:text-slate-300">학습 진도</h2>
+                  <p className="text-sm sm:text-base text-slate-400 dark:text-slate-500 mb-4 sm:mb-6">
                     학습 진도를 확인하고 관리하세요
                   </p>
-                  <button className="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 px-6 rounded-lg transition-all duration-200 text-base shadow-lg hover:shadow-xl">
+                  <button className="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-2.5 sm:py-3 px-4 sm:px-6 rounded-lg transition-all duration-200 text-sm sm:text-base shadow-lg hover:shadow-xl">
                     진도 확인하기
                   </button>
                 </div>
