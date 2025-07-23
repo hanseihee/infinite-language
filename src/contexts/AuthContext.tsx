@@ -66,12 +66,15 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     console.log('Current origin:', window.location.origin);
     console.log('OAuth redirectTo:', redirectTo);
     
-    const { error } = await supabase.auth.signInWithOAuth({
+    const { data, error } = await supabase.auth.signInWithOAuth({
       provider: 'google',
       options: {
         redirectTo: redirectTo
       }
     });
+    
+    console.log('OAuth response data:', data);
+    console.log('OAuth URL would redirect to:', data?.url);
     
     if (error) {
       console.error('Google 로그인 오류:', error);
