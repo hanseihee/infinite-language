@@ -49,3 +49,12 @@ This is a **Next.js 15 App Router** language learning application called "Infini
 ### Environment Variables Required
 
 - `OPENAI_API_KEY` - Required for sentence generation via OpenAI API
+
+### MCP Configuration
+
+This project uses MCP (Model Context Protocol) servers. To configure:
+
+1. Copy `.mcp.json.example` to `.mcp.json`
+2. Replace `YOUR_PROJECT_REF_HERE` with your Supabase project reference
+3. Replace `YOUR_PERSONAL_ACCESS_TOKEN_HERE` with your Supabase Personal Access Token
+4. The `.mcp.json` file is gitignored for security (contains sensitive tokens)
