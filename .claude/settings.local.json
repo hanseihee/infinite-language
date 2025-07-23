@@ -19,7 +19,8 @@
       "Bash(set SUPABASE_ACCESS_TOKEN=sbp_71014a942e73d7ffa7d063f7dcbba3146f3ce470)",
       "Bash(git rm:*)",
       "Bash(git add:*)",
-      "Bash(git commit:*)"
+      "Bash(git commit:*)",
+      "Bash(npm run dev:*)"
     ],
     "deny": []
   },

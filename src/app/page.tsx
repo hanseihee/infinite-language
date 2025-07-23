@@ -26,9 +26,17 @@ export default function Home() {
     const urlParams = new URLSearchParams(window.location.search);
     const success = urlParams.get('success');
     const error = urlParams.get('error');
+    const code = urlParams.get('code');
 
     if (success === 'login') {
       // URL에서 success 파라미터 제거
+      window.history.replaceState({}, '', '/');
+    }
+
+    if (code) {
+      // OAuth 코드가 있으면 implicit flow에서 자동으로 세션 처리됨
+      console.log('OAuth code detected, session should be handled automatically');
+      // URL에서 code 파라미터 제거
       window.history.replaceState({}, '', '/');
     }
 
