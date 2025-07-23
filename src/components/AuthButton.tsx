@@ -28,7 +28,7 @@ export default function AuthButton() {
               className="rounded-full"
             />
           )}
-          <span className="text-sm font-medium text-gray-700 dark:text-gray-300">
+          <span className="hidden md:block text-sm font-medium text-gray-700 dark:text-gray-300">
             {user.user_metadata?.full_name || user.email}
           </span>
         </div>

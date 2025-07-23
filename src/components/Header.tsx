@@ -32,8 +32,8 @@ export default function Header() {
               </svg>
             </button>
 
-            {/* 로고/브랜드 영역 */}
-            <div className="flex items-center">
+            {/* 로고/브랜드 영역 - 모바일에서는 숨김 */}
+            <div className="hidden md:flex items-center">
               <h1 className="text-lg sm:text-xl font-bold bg-gradient-to-r from-purple-600 via-blue-600 to-cyan-500 bg-clip-text text-transparent">
                 Infinite Language
               </h1>
