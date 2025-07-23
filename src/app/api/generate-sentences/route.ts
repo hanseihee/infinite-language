@@ -19,6 +19,29 @@ export async function POST(request: NextRequest) {
     const prompt = `Generate 10 unique English sentences for language learning practice with the following criteria:
 - Difficulty level: ${difficulty}
 - Context/Environment: ${environment}
+**If ${difficulty} = "쉬움"**
+- Use simple present, past, and future tenses only
+- Vocabulary: 1000 most common English words
+- Sentence length: 3-8 words maximum
+- Grammar: Basic subject-verb-object patterns
+- No idioms, phrasal verbs, or slang
+- Examples: "I like coffee.", "Where is the bathroom?", "Can you help me?"
+
+**If ${difficulty} = "중간"**
+- Use present perfect, past continuous, conditionals
+- Vocabulary: 2000-3000 most common words + some intermediate terms
+- Sentence length: 6-12 words
+- Grammar: Complex sentences with conjunctions, relative clauses
+- Include basic phrasal verbs and simple idioms
+- Examples: "I've been waiting for an hour.", "If I were you, I'd take the job."
+
+**If ${difficulty} = "어려움"**
+- Use advanced tenses (past perfect, future perfect, subjunctive)
+- Vocabulary: Advanced words, technical terms, sophisticated expressions
+- Sentence length: 10-15 words
+- Grammar: Complex structures, passive voice, advanced conditionals
+- Include advanced idioms, slang, cultural references
+- Examples: "Had I known about the traffic, I would've left earlier.", "She's been burning the midnight oil lately."
 - Each sentence should be practical and commonly used in real situations
 - Mix different sentence structures (questions, statements, requests)
 - Each sentence must be completely different from the others
@@ -30,12 +53,6 @@ Example format:
   {"sentence": "Do you have this in another size?", "korean": "다른 사이즈가 있나요?"},
   {"sentence": "I would like to make a reservation.", "korean": "예약하고 싶습니다."},
   {"sentence": "How much does this cost?", "korean": "이것은 얼마인가요?"},
-  {"sentence": "Can you help me find the exit?", "korean": "출구를 찾도록 도와주실 수 있나요?"},
-  {"sentence": "What time does the store close?", "korean": "가게는 몇 시에 문 닫나요?"},
-  {"sentence": "Could you please help me?", "korean": "도와주실 수 있나요?"},
-  {"sentence": "Where is the nearest subway station?", "korean": "가장 가까운 지하철역이 어디인가요?"},
-  {"sentence": "I need to exchange some money.", "korean": "환전을 해야 합니다."},
-  {"sentence": "What would you recommend?", "korean": "무엇을 추천하시나요?"},
   {"sentence": "Can I get the check please?", "korean": "계산서 주세요."}
 ]`;
 

@@ -6,9 +6,17 @@ import Dropdown from '@/components/Dropdown';
 export default function Home() {
   const [selectedDifficulty, setSelectedDifficulty] = useState<string>('');
   const [selectedEnvironment, setSelectedEnvironment] = useState<string>('');
+  const [customEnvironment, setCustomEnvironment] = useState<string>('');
 
   const difficultyOptions = ['쉬움', '중간', '어려움'];
   const environmentOptions = ['일상', '회사', '쇼핑', '여행', '레스토랑', '병원', '학교', '공항'];
+
+  // 최종 환경 선택: 사용자 입력이 있으면 우선, 없으면 드롭다운 선택
+  const getFinalEnvironment = () => {
+    return customEnvironment.trim() || selectedEnvironment;
+  };
+
+  const finalEnvironment = getFinalEnvironment();
 
   return (
     <main className="flex min-h-screen flex-col items-center justify-center p-4 sm:p-8 lg:p-24">
@@ -39,21 +47,59 @@ export default function Home() {
               <Dropdown
                 label="환경을 선택하세요"
                 options={environmentOptions}
-                onSelect={setSelectedEnvironment}
+                onSelect={(environment) => {
+                  setSelectedEnvironment(environment);
+                  // 드롭다운에서 선택할 때 사용자 입력 초기화
+                  setCustomEnvironment('');
+                }}
                 selectedOption={selectedEnvironment}
               />
+              
+              {/* 사용자 직접 입력 필드 */}
+              <div className="mt-3">
+                <label className="block text-sm sm:text-base font-medium text-gray-600 dark:text-gray-400 mb-2">
+                  또는 직접 입력하세요
+                </label>
+                <input
+                  type="text"
+                  value={customEnvironment}
+                  onChange={(e) => {
+                    setCustomEnvironment(e.target.value);
+                    // 사용자가 직접 입력할 때 드롭다운 선택 해제
+                    if (e.target.value.trim()) {
+                      setSelectedEnvironment('');
+                    }
+                  }}
+                  placeholder="예: 카페, 도서관, 헬스장..."
+                  className="w-full px-3 py-2 text-sm sm:text-base border border-gray-300 dark:border-gray-600 rounded-md bg-white dark:bg-gray-800 text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent min-h-[44px]"
+                />
+                {customEnvironment.trim() && selectedEnvironment && (
+                  <p className="text-xs text-amber-600 dark:text-amber-400 mt-1">
+                    ℹ️ 직접 입력한 &quot;{customEnvironment}&quot;이(가) 사용됩니다.
+                  </p>
+                )}
+              </div>
             </div>
           </div>
           
           {/* 선택된 옵션 표시 */}
-          {(selectedDifficulty || selectedEnvironment) && (
+          {(selectedDifficulty || finalEnvironment) && (
             <div className="mt-4 sm:mt-6 p-3 sm:p-4 bg-blue-50 dark:bg-blue-900/20 rounded-lg">
               <h3 className="text-base sm:text-lg font-semibold mb-2 text-blue-800 dark:text-blue-200">
                 선택된 설정
               </h3>
               <div className="space-y-1 text-blue-700 dark:text-blue-300">
                 {selectedDifficulty && <p>난이도: {selectedDifficulty}</p>}
-                {selectedEnvironment && <p>환경: {selectedEnvironment}</p>}
+                {finalEnvironment && (
+                  <p>
+                    환경: {finalEnvironment}
+                    {customEnvironment.trim() && (
+                      <span className="ml-2 text-xs bg-green-100 dark:bg-green-900 text-green-800 dark:text-green-200 px-2 py-1 rounded">
+                        직접입력
+                      </span>
+                    )}
+                  </p>
+                )}
               </div>
             </div>
           )}
@@ -67,14 +113,14 @@ export default function Home() {
             </p>
             <button
               onClick={() => {
-                if (!selectedDifficulty || !selectedEnvironment) {
+                if (!selectedDifficulty || !finalEnvironment) {
                   alert('난이도와 환경을 모두 선택해주세요!');
                   return;
                 }
-                window.location.href = `/quiz?difficulty=${selectedDifficulty}&environment=${selectedEnvironment}`;
+                window.location.href = `/quiz?difficulty=${selectedDifficulty}&environment=${encodeURIComponent(finalEnvironment)}`;
               }}
               className="w-full bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 sm:py-3 px-3 sm:px-4 rounded-lg transition-colors disabled:bg-gray-400 text-sm sm:text-base"
-              disabled={!selectedDifficulty || !selectedEnvironment}
+              disabled={!selectedDifficulty || !finalEnvironment}
             >
               퀴즈 시작하기
             </button>
