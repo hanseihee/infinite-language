@@ -43,17 +43,23 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   }, []);
 
   const signInWithGoogle = async () => {
-    // 환경별 리다이렉트 URL 설정
+    // 환경별 리다이렉트 URL 설정 - implicit flow에서는 직접 홈으로
     const getRedirectUrl = () => {
       const currentOrigin = window.location.origin;
+      console.log('=== DEBUG: OAuth Redirect Setup ===');
+      console.log('Current origin:', currentOrigin);
+      console.log('Is Vercel:', currentOrigin.includes('vercel.app'));
+      console.log('Is specific domain:', currentOrigin.includes('infinite-language-one.vercel.app'));
       
       // 배포 환경 감지
       if (currentOrigin.includes('vercel.app') || currentOrigin.includes('infinite-language-one.vercel.app')) {
-        return 'https://infinite-language-one.vercel.app/auth/callback';
+        console.log('Using production redirect URL');
+        return 'https://infinite-language-one.vercel.app/';
       }
       
       // 로컬 개발 환경
-      return `${currentOrigin}/auth/callback`;
+      console.log('Using local redirect URL');
+      return `${currentOrigin}/`;
     };
 
     const redirectTo = getRedirectUrl();

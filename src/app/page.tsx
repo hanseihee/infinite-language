@@ -28,6 +28,15 @@ export default function Home() {
     const error = urlParams.get('error');
     const code = urlParams.get('code');
 
+    // Implicit flow: URL fragment에서 토큰 확인
+    const hash = window.location.hash;
+    if (hash && hash.includes('access_token')) {
+      console.log('Access token detected in URL fragment, cleaning up...');
+      // URL fragment 제거
+      window.history.replaceState({}, '', '/');
+      // Supabase가 자동으로 세션을 설정하므로 별도 처리 불필요
+    }
+
     if (success === 'login') {
       // URL에서 success 파라미터 제거
       window.history.replaceState({}, '', '/');
