@@ -2,8 +2,11 @@
 
 import { useState } from 'react';
 import Dropdown from '@/components/Dropdown';
+import AuthButton from '@/components/AuthButton';
+import { useAuth } from '@/contexts/AuthContext';
 
 export default function Home() {
+  const { user, loading } = useAuth();
   const [selectedDifficulty, setSelectedDifficulty] = useState<string>('');
   const [selectedEnvironment, setSelectedEnvironment] = useState<string>('');
   const [customEnvironment, setCustomEnvironment] = useState<string>('');
@@ -21,6 +24,11 @@ export default function Home() {
   return (
     <main className="flex min-h-screen flex-col items-center justify-center p-4 sm:p-8 lg:p-24">
       <div className="z-10 w-full max-w-5xl items-center justify-between font-mono text-sm px-4">
+        {/* 상단 인증 버튼 */}
+        <div className="flex justify-end mb-6">
+          <AuthButton />
+        </div>
+        
         <h1 className="text-2xl sm:text-3xl lg:text-4xl font-bold text-center mb-8">
           Infinite Language
         </h1>
@@ -113,6 +121,10 @@ export default function Home() {
             </p>
             <button
               onClick={() => {
+                if (!user) {
+                  alert('퀴즈를 시작하려면 먼저 로그인해주세요!');
+                  return;
+                }
                 if (!selectedDifficulty || !finalEnvironment) {
                   alert('난이도와 환경을 모두 선택해주세요!');
                   return;
@@ -120,7 +132,7 @@ export default function Home() {
                 window.location.href = `/quiz?difficulty=${selectedDifficulty}&environment=${encodeURIComponent(finalEnvironment)}`;
               }}
               className="w-full bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 sm:py-3 px-3 sm:px-4 rounded-lg transition-colors disabled:bg-gray-400 text-sm sm:text-base"
-              disabled={!selectedDifficulty || !finalEnvironment}
+              disabled={loading || !selectedDifficulty || !finalEnvironment}
             >
               퀴즈 시작하기
             </button>

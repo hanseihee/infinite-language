@@ -3,6 +3,7 @@
 import { useState, useEffect, useCallback, Suspense } from 'react';
 import { useSearchParams } from 'next/navigation';
 import WordSelector from '@/components/WordSelector';
+import { useAuth } from '@/contexts/AuthContext';
 
 interface Sentence {
   id: number;
@@ -18,6 +19,7 @@ interface AnswerResult {
 }
 
 function QuizPageContent() {
+  const { user, loading } = useAuth();
   const searchParams = useSearchParams();
   const difficulty = searchParams.get('difficulty');
   const environment = searchParams.get('environment');
@@ -236,6 +238,37 @@ function QuizPageContent() {
       setCurrentAnswer(userAnswers[currentSentenceIndex] || '');
     }
   }, [currentSentenceIndex, sentences, userAnswers]);
+
+  // 로그인 체크
+  if (loading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-32 w-32 border-b-2 border-blue-500 mx-auto mb-4"></div>
+          <p className="text-lg">로딩 중...</p>
+        </div>
+      </div>
+    );
+  }
+
+  if (!user) {
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        <div className="text-center">
+          <h1 className="text-2xl font-bold mb-4">로그인이 필요합니다</h1>
+          <p className="text-gray-600 dark:text-gray-400 mb-6">
+            퀴즈를 이용하려면 먼저 로그인해주세요.
+          </p>
+          <button
+            onClick={() => window.location.href = '/'}
+            className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
+          >
+            홈으로 돌아가기
+          </button>
+        </div>
+      </div>
+    );
+  }
 
   if (isLoading) {
     return (
