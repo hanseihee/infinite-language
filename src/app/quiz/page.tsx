@@ -268,43 +268,43 @@ function QuizPageContent() {
     const correctCount = answerResults.filter(result => result.isCorrect).length;
     
     return (
-      <div className="min-h-screen bg-gray-50 dark:bg-gray-900 py-8">
-        <div className="max-w-4xl mx-auto px-4">
-          <div className="bg-white dark:bg-gray-800 rounded-lg shadow-lg p-8">
-            <h1 className="text-3xl font-bold text-center mb-8">퀴즈 결과</h1>
+      <div className="min-h-screen bg-gray-50 dark:bg-gray-900 py-4 sm:py-8">
+        <div className="max-w-4xl mx-auto px-3 sm:px-4">
+          <div className="bg-white dark:bg-gray-800 rounded-lg shadow-lg p-4 sm:p-8">
+            <h1 className="text-2xl sm:text-3xl font-bold text-center mb-6 sm:mb-8">퀴즈 결과</h1>
             
-            <div className="text-center mb-8">
-              <div className="text-4xl font-bold mb-2">
+            <div className="text-center mb-6 sm:mb-8">
+              <div className="text-3xl sm:text-4xl font-bold mb-2">
                 {correctCount} / {sentences.length}
               </div>
-              <p className="text-lg text-gray-600 dark:text-gray-400">
+              <p className="text-base sm:text-lg text-gray-600 dark:text-gray-400">
                 정답률: {Math.round((correctCount / sentences.length) * 100)}%
               </p>
             </div>
 
-            <div className="space-y-6">
+            <div className="space-y-4 sm:space-y-6">
               {answerResults.map((result, index) => (
-                <div key={index} className="border border-gray-200 dark:border-gray-700 rounded-lg p-4">
+                <div key={index} className="border border-gray-200 dark:border-gray-700 rounded-lg p-3 sm:p-4">
                   <div className="flex items-center mb-2">
-                    <span className="text-lg font-semibold mr-2">문제 {index + 1}</span>
+                    <span className="text-base sm:text-lg font-semibold mr-2">문제 {index + 1}</span>
                     {result.isCorrect ? (
-                      <span className="text-green-500">✓ 정답</span>
+                      <span className="text-green-500 text-sm sm:text-base">✓ 정답</span>
                     ) : (
-                      <span className="text-red-500">✗ 오답</span>
+                      <span className="text-red-500 text-sm sm:text-base">✗ 오답</span>
                     )}
                   </div>
-                  <div className="space-y-2">
-                    <p><strong>정답:</strong> {result.correctAnswer}</p>
-                    <p><strong>당신의 답:</strong> {result.userAnswer || '(답하지 않음)'}</p>
+                  <div className="space-y-1 sm:space-y-2">
+                    <p className="text-sm sm:text-base"><strong>정답:</strong> {result.correctAnswer}</p>
+                    <p className="text-sm sm:text-base"><strong>당신의 답:</strong> {result.userAnswer || '(답하지 않음)'}</p>
                   </div>
                 </div>
               ))}
             </div>
 
-            <div className="text-center mt-8">
+            <div className="text-center mt-6 sm:mt-8">
               <button
                 onClick={() => window.location.href = '/'}
-                className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-3 px-6 rounded-lg"
+                className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-3 px-4 sm:px-6 rounded-lg text-sm sm:text-base touch-manipulation min-h-[44px]"
               >
                 홈으로 돌아가기
               </button>
@@ -318,30 +318,30 @@ function QuizPageContent() {
   const currentSentence = sentences[currentSentenceIndex];
 
   return (
-    <div className="min-h-screen bg-gray-50 dark:bg-gray-900 py-8">
-      <div className="max-w-4xl mx-auto px-4">
-        <div className="bg-white dark:bg-gray-800 rounded-lg shadow-lg p-8">
-          <div className="flex justify-between items-center mb-6">
-            <h1 className="text-2xl font-bold">영어 문장 만들기</h1>
-            <div className="text-sm text-gray-500">
+    <div className="min-h-screen bg-gray-50 dark:bg-gray-900 py-4 sm:py-8">
+      <div className="max-w-4xl mx-auto px-3 sm:px-4">
+        <div className="bg-white dark:bg-gray-800 rounded-lg shadow-lg p-4 sm:p-8">
+          <div className="flex justify-between items-center mb-4 sm:mb-6">
+            <h1 className="text-lg sm:text-2xl font-bold">영어 문장 만들기</h1>
+            <div className="text-xs sm:text-sm text-gray-500">
               {currentSentenceIndex + 1} / {sentences.length}
             </div>
           </div>
 
-          <div className="mb-6">
-            <p className="text-lg mb-2">
+          <div className="mb-4 sm:mb-6">
+            <p className="text-sm sm:text-lg mb-2">
               <strong>난이도:</strong> {difficulty} | <strong>환경:</strong> {environment}
             </p>
           </div>
 
-          <div className="mb-8">
-            <h2 className="text-xl font-semibold mb-4">
+          <div className="mb-6 sm:mb-8">
+            <h2 className="text-lg sm:text-xl font-semibold mb-3 sm:mb-4">
               문제 {currentSentenceIndex + 1}: 아래 단어들을 올바른 순서로 배열하세요
             </h2>
             
             {/* 한국어 힌트 */}
-            <div className="mb-6 p-3 bg-yellow-50 dark:bg-yellow-900/20 border border-yellow-200 dark:border-yellow-800 rounded-lg">
-              <p className="text-yellow-800 dark:text-yellow-200">
+            <div className="mb-4 sm:mb-6 p-3 bg-yellow-50 dark:bg-yellow-900/20 border border-yellow-200 dark:border-yellow-800 rounded-lg">
+              <p className="text-yellow-800 dark:text-yellow-200 text-sm sm:text-base">
                 <strong>💡 힌트 (한국어):</strong> {currentSentence.koreanTranslation}
               </p>
             </div>
@@ -352,15 +352,15 @@ function QuizPageContent() {
             />
 
             {currentAnswer && (
-              <div className="mt-4 p-3 bg-blue-50 dark:bg-blue-900/20 rounded-lg">
-                <p className="text-blue-800 dark:text-blue-200">
+              <div className="mt-3 sm:mt-4 p-3 bg-blue-50 dark:bg-blue-900/20 rounded-lg">
+                <p className="text-blue-800 dark:text-blue-200 text-sm sm:text-base">
                   <strong>현재 답:</strong> {currentAnswer}
                 </p>
               </div>
             )}
 
             {showFeedback && answerResults[currentSentenceIndex] && (
-              <div className={`mt-4 p-4 rounded-lg ${
+              <div className={`mt-3 sm:mt-4 p-3 sm:p-4 rounded-lg ${
                 answerResults[currentSentenceIndex].isCorrect 
                   ? 'bg-green-50 dark:bg-green-900/20 border border-green-200 dark:border-green-800' 
                   : 'bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800'
@@ -368,19 +368,19 @@ function QuizPageContent() {
                 <div className="flex items-center justify-between mb-2">
                   <div className="flex items-center">
                     {answerResults[currentSentenceIndex].isCorrect ? (
-                      <span className="text-green-700 dark:text-green-300 font-semibold">✓ 정답입니다!</span>
+                      <span className="text-green-700 dark:text-green-300 font-semibold text-sm sm:text-base">✓ 정답입니다!</span>
                     ) : (
-                      <span className="text-red-700 dark:text-red-300 font-semibold">✗ 틀렸습니다</span>
+                      <span className="text-red-700 dark:text-red-300 font-semibold text-sm sm:text-base">✗ 틀렸습니다</span>
                     )}
                   </div>
                   {isPlayingTTS && (
                     <div className="flex items-center text-blue-600 dark:text-blue-400">
                       <div className="animate-pulse mr-2">🔊</div>
-                      <span className="text-sm">음성 재생 중...</span>
+                      <span className="text-xs sm:text-sm">음성 재생 중...</span>
                     </div>
                   )}
                 </div>
-                <div className="space-y-1 text-sm">
+                <div className="space-y-1 text-xs sm:text-sm">
                   <p className={answerResults[currentSentenceIndex].isCorrect ? 'text-green-700 dark:text-green-300' : 'text-red-700 dark:text-red-300'}>
                     <strong>당신의 답:</strong> {answerResults[currentSentenceIndex].userAnswer}
                   </p>
@@ -392,7 +392,7 @@ function QuizPageContent() {
                   <button
                     onClick={handleTTSClick}
                     disabled={isPlayingTTS}
-                    className={`text-xs mt-2 flex items-center space-x-1 transition-colors ${
+                    className={`text-xs mt-2 flex items-center space-x-1 transition-colors touch-manipulation min-h-[44px] ${
                       isPlayingTTS 
                         ? 'text-blue-400 dark:text-blue-500 cursor-not-allowed' 
                         : 'text-blue-600 dark:text-blue-400 hover:text-blue-800 dark:hover:text-blue-300 cursor-pointer'
@@ -408,11 +408,11 @@ function QuizPageContent() {
             )}
           </div>
 
-          <div className="flex justify-between">
+          <div className="flex justify-between gap-3">
             <button
               onClick={goToPrevSentence}
               disabled={currentSentenceIndex === 0}
-              className="bg-gray-500 hover:bg-gray-700 disabled:bg-gray-300 text-white font-bold py-2 px-4 rounded disabled:cursor-not-allowed"
+              className="bg-gray-500 hover:bg-gray-700 disabled:bg-gray-300 text-white font-bold py-2 px-3 sm:px-4 rounded disabled:cursor-not-allowed text-sm sm:text-base touch-manipulation min-h-[44px]"
             >
               이전
             </button>
@@ -420,7 +420,7 @@ function QuizPageContent() {
             <button
               onClick={goToNextSentence}
               disabled={!currentAnswer}
-              className="bg-blue-500 hover:bg-blue-700 disabled:bg-blue-300 text-white font-bold py-2 px-4 rounded disabled:cursor-not-allowed"
+              className="bg-blue-500 hover:bg-blue-700 disabled:bg-blue-300 text-white font-bold py-2 px-3 sm:px-4 rounded disabled:cursor-not-allowed text-sm sm:text-base touch-manipulation min-h-[44px] flex-1 max-w-[200px]"
             >
               {showFeedback ? 
                 (currentSentenceIndex === sentences.length - 1 ? '결과 보기' : '다음 문제') 
