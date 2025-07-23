@@ -26,31 +26,32 @@ export default function Home() {
     const urlParams = new URLSearchParams(window.location.search);
     const success = urlParams.get('success');
     const error = urlParams.get('error');
-    const code = urlParams.get('code');
-
-    // Implicit flow: URL fragment에서 토큰 확인
-    const hash = window.location.hash;
-    if (hash && hash.includes('access_token')) {
-      console.log('Access token detected in URL fragment, cleaning up...');
-      // URL fragment 제거
-      window.history.replaceState({}, '', '/');
-      // Supabase가 자동으로 세션을 설정하므로 별도 처리 불필요
-    }
 
     if (success === 'login') {
+      console.log('Login success detected, cleaning up URL');
       // URL에서 success 파라미터 제거
       window.history.replaceState({}, '', '/');
-    }
-
-    if (code) {
-      // OAuth 코드가 있으면 implicit flow에서 자동으로 세션 처리됨
-      console.log('OAuth code detected, session should be handled automatically');
-      // URL에서 code 파라미터 제거
-      window.history.replaceState({}, '', '/');
+      // 로그인 성공 메시지 표시 (선택사항)
+      // alert('로그인이 성공적으로 완료되었습니다!');
     }
 
     if (error) {
       console.error('Auth error:', error);
+      let errorMessage = '로그인 중 오류가 발생했습니다.';
+      
+      switch (error) {
+        case 'oauth_error':
+          errorMessage = 'OAuth 인증 중 오류가 발생했습니다.';
+          break;
+        case 'session_exchange_failed':
+          errorMessage = '세션 생성 중 오류가 발생했습니다.';
+          break;
+        case 'unexpected_error':
+          errorMessage = '예상치 못한 오류가 발생했습니다.';
+          break;
+      }
+      
+      alert(errorMessage);
       // URL에서 error 파라미터 제거
       window.history.replaceState({}, '', '/');
     }

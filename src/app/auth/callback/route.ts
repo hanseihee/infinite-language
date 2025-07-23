@@ -29,13 +29,27 @@ export async function GET(request: NextRequest) {
     return NextResponse.redirect(`${baseUrl}/?error=oauth_error`);
   }
 
-  // Implicit flow에서는 클라이언트에서 세션 처리
-  // 단순히 홈으로 리다이렉트하고 클라이언트가 URL에서 토큰 파싱
+  // 인증 코드가 있으면 Supabase에서 세션 교환 처리
   if (code) {
-    console.log('OAuth code received, redirecting to home for client-side processing');
-    return NextResponse.redirect(`${baseUrl}/?code=${code}`);
+    console.log('OAuth code received, exchanging for session');
+    try {
+      const { data, error: exchangeError } = await supabase.auth.exchangeCodeForSession(code);
+      
+      if (exchangeError) {
+        console.error('Session exchange error:', exchangeError);
+        return NextResponse.redirect(`${baseUrl}/?error=session_exchange_failed`);
+      }
+      
+      console.log('Session exchange successful:', data.session ? 'session created' : 'no session');
+      // 성공적으로 세션 생성 후 홈으로 리다이렉트
+      return NextResponse.redirect(`${baseUrl}/?success=login`);
+    } catch (err) {
+      console.error('Unexpected error during session exchange:', err);
+      return NextResponse.redirect(`${baseUrl}/?error=unexpected_error`);
+    }
   }
 
-  // 성공적으로 로그인된 경우 홈으로 리다이렉트
+  // 코드가 없으면 홈으로 리다이렉트
+  console.log('No code received, redirecting to home');
   return NextResponse.redirect(baseUrl);
 }
