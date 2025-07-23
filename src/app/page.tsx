@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import Dropdown from '@/components/Dropdown';
-import AuthButton from '@/components/AuthButton';
+import Header from '@/components/Header';
 import { useAuth } from '@/contexts/AuthContext';
 
 export default function Home() {
@@ -58,12 +58,10 @@ export default function Home() {
   }, []);
 
   return (
-    <main className="flex min-h-screen flex-col items-center justify-center p-4 sm:p-8 lg:p-24">
-      <div className="z-10 w-full max-w-5xl items-center justify-between font-mono text-sm px-4">
-        {/* 상단 인증 버튼 */}
-        <div className="flex justify-end mb-6">
-          <AuthButton />
-        </div>
+    <>
+      <Header />
+      <main className="flex min-h-screen flex-col items-center justify-center p-4 sm:p-8 lg:p-24">
+        <div className="z-10 w-full max-w-5xl items-center justify-between font-mono text-sm px-4">
         
         <h1 className="gradient-title text-3xl sm:text-4xl lg:text-6xl font-bold text-center mb-12 py-4 leading-tight font-['Inter',_'Pretendard',_sans-serif] tracking-tight">
           Infinite Language
@@ -182,5 +180,6 @@ export default function Home() {
         </div>
       </div>
     </main>
+    </>
   )
 }
