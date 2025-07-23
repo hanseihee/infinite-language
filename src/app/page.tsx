@@ -13,12 +13,9 @@ export default function Home() {
   return (
     <main className="flex min-h-screen flex-col items-center justify-center p-4 sm:p-12 lg:p-24">
       <div className="z-10 w-full max-w-5xl items-center justify-between font-mono text-sm">
-        <h1 className="text-2xl sm:text-3xl lg:text-4xl font-bold text-center mb-6 sm:mb-8">
+        <h1 className="text-2xl sm:text-3xl lg:text-4xl font-bold text-center mb-8 sm:mb-12">
           Infinite Language
         </h1>
-        <p className="text-base sm:text-lg lg:text-xl text-center text-gray-600 dark:text-gray-400 mb-8 sm:mb-12 px-4">
-          영어 학습을 위한 Next.js 애플리케이션
-        </p>
         
         {/* 드롭다운 메뉴 섹션 */}
         <div className="max-w-2xl mx-auto mb-8 sm:mb-12 px-4">
