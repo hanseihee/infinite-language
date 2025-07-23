@@ -79,23 +79,23 @@ export default function WordSelector({ words, onWordsChange }: WordSelectorProps
   };
 
   return (
-    <div className="space-y-4">
+    <div className="space-y-3 sm:space-y-4">
       {/* 정답칸 */}
-      <div className="p-4 border-2 border-blue-300 dark:border-blue-600 rounded-lg bg-blue-50 dark:bg-blue-900/20 min-h-[80px]">
-        <div className="flex items-center justify-between mb-2">
-          <h3 className="text-lg font-semibold text-blue-800 dark:text-blue-200">
+      <div className="p-3 sm:p-4 border-2 border-blue-300 dark:border-blue-600 rounded-lg bg-blue-50 dark:bg-blue-900/20 min-h-[70px] sm:min-h-[80px]">
+        <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between mb-2 sm:mb-2 space-y-2 sm:space-y-0">
+          <h3 className="text-base sm:text-lg font-semibold text-blue-800 dark:text-blue-200">
             내 답안
           </h3>
           <button
             onClick={handleClear}
-            className="px-3 py-1 bg-red-500 hover:bg-red-600 text-white text-sm rounded-md transition-colors"
+            className="px-2 sm:px-3 py-1 bg-red-500 hover:bg-red-600 text-white text-xs sm:text-sm rounded-md transition-colors min-h-[32px] flex items-center"
           >
             지우기
           </button>
         </div>
-        <div className="flex flex-wrap gap-2 min-h-[40px]">
+        <div className="flex flex-wrap gap-1 sm:gap-2 min-h-[35px] sm:min-h-[40px]">
           {selectedWords.length === 0 ? (
-            <p className="text-blue-600 dark:text-blue-300 italic">
+            <p className="text-sm sm:text-base text-blue-600 dark:text-blue-300 italic">
               아래 단어들을 클릭하여 문장을 완성하세요
             </p>
           ) : (
@@ -103,7 +103,7 @@ export default function WordSelector({ words, onWordsChange }: WordSelectorProps
               <div
                 key={index}
                 onClick={() => handleRemoveWord(index)}
-                className="inline-block bg-blue-500 text-white px-3 py-2 rounded-lg cursor-pointer hover:bg-blue-600 transition-colors shadow-sm"
+                className="inline-block bg-blue-500 text-white px-2 sm:px-3 py-1 sm:py-2 rounded-lg cursor-pointer hover:bg-blue-600 transition-colors shadow-sm text-sm sm:text-base min-h-[32px] sm:min-h-[36px] flex items-center"
               >
                 {word}
               </div>
@@ -113,17 +113,17 @@ export default function WordSelector({ words, onWordsChange }: WordSelectorProps
       </div>
 
       {/* 단어 선택 영역 */}
-      <div className="p-4 border border-gray-200 dark:border-gray-700 rounded-lg bg-gray-50 dark:bg-gray-800">
-        <h3 className="text-lg font-semibold mb-3 text-gray-700 dark:text-gray-300">
+      <div className="p-3 sm:p-4 border border-gray-200 dark:border-gray-700 rounded-lg bg-gray-50 dark:bg-gray-800">
+        <h3 className="text-base sm:text-lg font-semibold mb-2 sm:mb-3 text-gray-700 dark:text-gray-300">
           단어 선택
         </h3>
-        <div className="flex flex-wrap gap-2">
+        <div className="flex flex-wrap gap-1 sm:gap-2">
           {words.map((word, index) => (
             <button
               key={index}
               onClick={() => handleWordClick(word, index)}
               disabled={usedWords.has(index)}
-              className={`px-3 py-2 rounded-lg transition-all shadow-sm ${
+              className={`px-2 sm:px-3 py-1 sm:py-2 rounded-lg transition-all shadow-sm text-sm sm:text-base min-h-[36px] sm:min-h-[40px] flex items-center justify-center ${
                 usedWords.has(index)
                   ? 'bg-gray-300 dark:bg-gray-600 text-gray-500 dark:text-gray-400 cursor-not-allowed opacity-50'
                   : 'bg-green-100 dark:bg-green-900 text-green-800 dark:text-green-200 hover:bg-green-200 dark:hover:bg-green-800 cursor-pointer'
@@ -133,7 +133,7 @@ export default function WordSelector({ words, onWordsChange }: WordSelectorProps
             </button>
           ))}
         </div>
-        <p className="text-sm text-gray-500 dark:text-gray-400 mt-2">
+        <p className="text-xs sm:text-sm text-gray-500 dark:text-gray-400 mt-2">
           단어를 클릭하여 순서대로 문장을 만들어보세요
         </p>
       </div>
