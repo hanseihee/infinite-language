@@ -24,3 +24,21 @@ body {
   color: var(--foreground);
   font-family: Arial, Helvetica, sans-serif;
 }
+
+.gradient-title {
+  background: linear-gradient(90deg, #ff0066, #ff8c42, #ffd93d, #6bcf7f, #4d9de0, #9d4edd, #e15759, #ff7b54, #42c2ff, #7209b7, #ff0066);
+  background-size: 400% 100%;
+  background-clip: text;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  animation: gradient-flow 24s linear infinite;
+}
+
+@keyframes gradient-flow {
+  0% {
+    background-position: 400% 0%;
+  }
+  100% {
+    background-position: 0% 0%;
+  }
+}

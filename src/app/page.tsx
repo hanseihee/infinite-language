@@ -65,7 +65,7 @@ export default function Home() {
           <AuthButton />
         </div>
         
-        <h1 className="text-2xl sm:text-3xl lg:text-4xl font-bold text-center mb-8">
+        <h1 className="gradient-title text-3xl sm:text-4xl lg:text-6xl font-bold text-center mb-12 py-4 leading-tight font-['Inter',_'Pretendard',_sans-serif] tracking-tight">
           Infinite Language
         </h1>
         
