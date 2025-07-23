@@ -4,8 +4,24 @@
       "Bash(npm init:*)",
       "Bash(npm install:*)",
       "Bash(npm run build:*)",
-      "Bash(rm:*)"
+      "Bash(rm:*)",
+      "Bash(claude --list-servers)",
+      "Bash(claude config list)",
+      "Bash(echo $APPDATA)",
+      "Bash(find:*)",
+      "Bash(ls:*)",
+      "Bash(claude mcp:*)",
+      "WebFetch(domain:supabase.com)",
+      "Bash(claude --version)",
+      "Bash(claude restart)",
+      "Bash(npx:*)",
+      "Bash(SUPABASE_ACCESS_TOKEN=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InhoY21tZWppbnlibm1wYXp0c3l3Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTMyMzEyNzQsImV4cCI6MjA2ODgwNzI3NH0.FQRRG1iQgi1V3JAxZoI4TnENDOhINiKPYBrapMbDjqI npx -y @supabase/mcp-server-supabase@latest --project-ref=xhcmmejinybnmpaztsyw)",
+      "Bash(set SUPABASE_ACCESS_TOKEN=sbp_71014a942e73d7ffa7d063f7dcbba3146f3ce470)"
     ],
     "deny": []
-  }
+  },
+  "enableAllProjectMcpServers": true,
+  "enabledMcpjsonServers": [
+    "supabase"
+  ]
 }
