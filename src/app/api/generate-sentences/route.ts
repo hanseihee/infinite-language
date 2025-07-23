@@ -19,9 +19,17 @@ export async function POST(request: NextRequest) {
     const prompt = `Generate 10 unique English sentences for language learning practice with the following criteria:
 - Difficulty level: ${difficulty}
 - Context/Environment: ${environment}
-- Each sentence should be practical and commonly used in real situations
-- Mix different sentence structures (questions, statements, requests)
-- Each sentence must be completely different from the others
+- Use authentic, natural expressions that native speakers actually use in daily life
+- Include modern slang, idioms, phrasal verbs, and conversational expressions
+- Draw inspiration from movies, TV shows, social media, and contemporary culture
+- Mix various sentence types: questions, statements, exclamations, requests, complaints, compliments
+- Include emotional expressions and reactions people commonly use
+- Vary sentence length from short casual phrases to longer complex sentences
+- Use contractions and informal language where appropriate
+- Include trending expressions and current cultural references when relevant
+- Each sentence must be completely unique and contextually different
+- Avoid overly formal or textbook-style language
+- Focus on phrases that help learners sound more natural and fluent
 - Return ONLY a JSON array of objects with "sentence" and "korean" properties
 - No explanations or additional text
 
