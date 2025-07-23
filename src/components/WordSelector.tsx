@@ -11,18 +11,6 @@ export default function WordSelector({ words, onWordsChange }: WordSelectorProps
   const [selectedWords, setSelectedWords] = useState<string[]>([]);
   const [usedWords, setUsedWords] = useState<Set<number>>(new Set());
 
-  // 햅틱 피드백 함수
-  const triggerHaptic = (intensity: 'light' | 'medium' | 'heavy' = 'light') => {
-    try {
-      if ('vibrate' in navigator) {
-        // 진동 패턴: light=50ms, medium=100ms, heavy=200ms
-        const vibrationDuration = intensity === 'light' ? 50 : intensity === 'medium' ? 100 : 200;
-        navigator.vibrate(vibrationDuration);
-      }
-    } catch (error) {
-      console.log('Haptic feedback not supported');
-    }
-  };
 
   // 비프음 재생 함수
   const playBeep = () => {
@@ -56,7 +44,6 @@ export default function WordSelector({ words, onWordsChange }: WordSelectorProps
   const handleWordClick = (word: string, index: number) => {
     if (usedWords.has(index)) return;
     
-    triggerHaptic('light');
     playBeep();
     const newSelectedWords = [...selectedWords, word];
     const newUsedWords = new Set([...usedWords, index]);
@@ -67,7 +54,6 @@ export default function WordSelector({ words, onWordsChange }: WordSelectorProps
   };
 
   const handleClear = () => {
-    triggerHaptic('medium');
     playBeep();
     setSelectedWords([]);
     setUsedWords(new Set());
@@ -75,7 +61,6 @@ export default function WordSelector({ words, onWordsChange }: WordSelectorProps
   };
 
   const handleRemoveWord = (indexToRemove: number) => {
-    triggerHaptic('light');
     playBeep();
     const removedWord = selectedWords[indexToRemove];
     const newSelectedWords = selectedWords.filter((_, index) => index !== indexToRemove);
