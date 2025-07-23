@@ -60,126 +60,137 @@ export default function Home() {
   return (
     <>
       <Header />
-      <main className="flex min-h-screen flex-col items-center justify-center p-4 sm:p-8 lg:p-24">
-        <div className="z-10 w-full max-w-5xl items-center justify-between font-mono text-sm px-4">
-        
-        <h1 className="gradient-title text-3xl sm:text-4xl lg:text-6xl font-bold text-center mb-12 py-4 leading-tight font-['Inter',_'Pretendard',_sans-serif] tracking-tight">
-          Infinite Language
-        </h1>
-        
-        {/* 드롭다운 메뉴 섹션 */}
-        <div className="max-w-2xl mx-auto mb-8 sm:mb-12">
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-6">
-            <div className="space-y-2">
-              <label className="block text-base sm:text-lg font-semibold text-gray-700 dark:text-gray-300">
-                난이도 선택
-              </label>
-              <Dropdown
-                label="난이도를 선택하세요"
-                options={difficultyOptions}
-                onSelect={setSelectedDifficulty}
-                selectedOption={selectedDifficulty}
-              />
-            </div>
-            
-            <div className="space-y-2">
-              <label className="block text-base sm:text-lg font-semibold text-gray-700 dark:text-gray-300">
-                환경 선택
-              </label>
-              <Dropdown
-                label="환경을 선택하세요"
-                options={environmentOptions}
-                onSelect={(environment) => {
-                  setSelectedEnvironment(environment);
-                  // 드롭다운에서 선택할 때 사용자 입력 초기화
-                  setCustomEnvironment('');
-                }}
-                selectedOption={selectedEnvironment}
-              />
-              
-              {/* 사용자 직접 입력 필드 */}
-              <div className="mt-3">
-                <label className="block text-sm sm:text-base font-medium text-gray-600 dark:text-gray-400 mb-2">
-                  또는 직접 입력하세요
-                </label>
-                <input
-                  type="text"
-                  value={customEnvironment}
-                  onChange={(e) => {
-                    setCustomEnvironment(e.target.value);
-                    // 사용자가 직접 입력할 때 드롭다운 선택 해제
-                    if (e.target.value.trim()) {
-                      setSelectedEnvironment('');
-                    }
-                  }}
-                  placeholder="예: 카페, 도서관, 헬스장..."
-                  className="w-full px-3 py-2 text-sm sm:text-base border border-gray-300 dark:border-gray-600 rounded-md bg-white dark:bg-gray-800 text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent min-h-[44px]"
-                />
-                {customEnvironment.trim() && selectedEnvironment && (
-                  <p className="text-xs text-amber-600 dark:text-amber-400 mt-1">
-                    ℹ️ 직접 입력한 &quot;{customEnvironment}&quot;이(가) 사용됩니다.
-                  </p>
-                )}
-              </div>
-            </div>
-          </div>
+      <main className="min-h-screen bg-gradient-to-br from-gray-100 to-gray-200 dark:from-gray-950 dark:to-gray-900">
+        <div className="container mx-auto px-4 sm:px-6 lg:px-8 pt-16 pb-24">
           
-          {/* 선택된 옵션 표시 */}
-          {(selectedDifficulty || finalEnvironment) && (
-            <div className="mt-4 sm:mt-6 p-3 sm:p-4 bg-blue-50 dark:bg-blue-900/20 rounded-lg">
-              <h3 className="text-base sm:text-lg font-semibold mb-2 text-blue-800 dark:text-blue-200">
-                선택된 설정
-              </h3>
-              <div className="space-y-1 text-blue-700 dark:text-blue-300">
-                {selectedDifficulty && <p>난이도: {selectedDifficulty}</p>}
-                {finalEnvironment && (
-                  <p>
-                    환경: {finalEnvironment}
-                    {customEnvironment.trim() && (
-                      <span className="ml-2 text-xs bg-green-100 dark:bg-green-900 text-green-800 dark:text-green-200 px-2 py-1 rounded">
-                        직접입력
-                      </span>
+          <h1 className="gradient-title text-4xl sm:text-5xl lg:text-7xl font-bold text-center mb-16 py-6 leading-tight font-['Inter',_'Pretendard',_sans-serif] tracking-tight">
+            Infinite Language
+          </h1>
+        
+          {/* 드롭다운 메뉴 섹션 */}
+          <div className="max-w-4xl mx-auto mb-12">
+            <div className="bg-gray-950 dark:bg-gray-900 rounded-2xl shadow-2xl p-6 sm:p-8 border border-gray-800 dark:border-gray-700">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6 sm:gap-8">
+                <div className="space-y-3">
+                  <label className="block text-lg font-semibold text-gray-200 dark:text-gray-300">
+                    난이도 선택
+                  </label>
+                  <Dropdown
+                    label="난이도를 선택하세요"
+                    options={difficultyOptions}
+                    onSelect={setSelectedDifficulty}
+                    selectedOption={selectedDifficulty}
+                  />
+                </div>
+                
+                <div className="space-y-3">
+                  <label className="block text-lg font-semibold text-gray-200 dark:text-gray-300">
+                    환경 선택
+                  </label>
+                  <Dropdown
+                    label="환경을 선택하세요"
+                    options={environmentOptions}
+                    onSelect={(environment) => {
+                      setSelectedEnvironment(environment);
+                      setCustomEnvironment('');
+                    }}
+                    selectedOption={selectedEnvironment}
+                  />
+                  
+                  {/* 사용자 직접 입력 필드 */}
+                  <div className="mt-4">
+                    <label className="block text-base font-medium text-gray-400 dark:text-gray-500 mb-2">
+                      또는 직접 입력하세요
+                    </label>
+                    <input
+                      type="text"
+                      value={customEnvironment}
+                      onChange={(e) => {
+                        setCustomEnvironment(e.target.value);
+                        if (e.target.value.trim()) {
+                          setSelectedEnvironment('');
+                        }
+                      }}
+                      placeholder="예: 카페, 도서관, 헬스장..."
+                      className="w-full px-4 py-3 text-base border border-gray-600 dark:border-gray-500 rounded-lg bg-gray-800 dark:bg-gray-700 text-gray-200 dark:text-white placeholder-gray-500 dark:placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-gray-500 focus:border-transparent transition-colors"
+                    />
+                    {customEnvironment.trim() && selectedEnvironment && (
+                      <p className="text-sm text-amber-600 dark:text-amber-400 mt-2">
+                        ℹ️ 직접 입력한 &quot;{customEnvironment}&quot;이(가) 사용됩니다.
+                      </p>
                     )}
+                  </div>
+                </div>
+              </div>
+              
+              {/* 선택된 옵션 표시 */}
+              {(selectedDifficulty || finalEnvironment) && (
+                <div className="mt-8 p-5 bg-gradient-to-r from-gray-800 to-gray-700 dark:from-gray-700 dark:to-gray-600 rounded-xl border border-gray-600 dark:border-gray-500">
+                  <h3 className="text-lg font-semibold mb-3 text-gray-200 dark:text-gray-300">
+                    선택된 설정
+                  </h3>
+                  <div className="space-y-2 text-gray-300 dark:text-gray-400">
+                    {selectedDifficulty && <p className="text-base">난이도: <span className="font-medium text-white">{selectedDifficulty}</span></p>}
+                    {finalEnvironment && (
+                      <p className="text-base">
+                        환경: <span className="font-medium text-white">{finalEnvironment}</span>
+                        {customEnvironment.trim() && (
+                          <span className="ml-2 text-xs bg-gray-600 dark:bg-gray-500 text-gray-200 dark:text-gray-300 px-2 py-1 rounded-full">
+                            직접입력
+                          </span>
+                        )}
+                      </p>
+                    )}
+                  </div>
+                </div>
+              )}
+            </div>
+          </div>
+
+          {/* 액션 카드 섹션 */}
+          <div className="max-w-4xl mx-auto">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <div className="bg-gray-950 dark:bg-gray-900 p-6 sm:p-8 border border-gray-800 dark:border-gray-700 rounded-2xl shadow-2xl hover:shadow-3xl transition-shadow">
+                <div className="text-center">
+                  <h2 className="text-xl sm:text-2xl font-bold mb-4 text-gray-200 dark:text-gray-300">시작하기</h2>
+                  <p className="text-base text-gray-400 dark:text-gray-500 mb-6">
+                    언어 학습 여정을 시작해보세요
                   </p>
-                )}
+                  <button
+                    onClick={() => {
+                      if (!user) {
+                        alert('퀴즈를 시작하려면 먼저 로그인해주세요!');
+                        return;
+                      }
+                      if (!selectedDifficulty || !finalEnvironment) {
+                        alert('난이도와 환경을 모두 선택해주세요!');
+                        return;
+                      }
+                      window.location.href = `/quiz?difficulty=${selectedDifficulty}&environment=${encodeURIComponent(finalEnvironment)}`;
+                    }}
+                    className="w-full bg-gray-800 hover:bg-gray-700 text-white font-bold py-3 px-6 rounded-lg transition-all duration-200 disabled:bg-gray-600 text-base border border-gray-700"
+                    disabled={loading || !selectedDifficulty || !finalEnvironment}
+                  >
+                    퀴즈 시작하기
+                  </button>
+                </div>
+              </div>
+              
+              <div className="bg-gray-950 dark:bg-gray-900 p-6 sm:p-8 border border-gray-800 dark:border-gray-700 rounded-2xl shadow-2xl hover:shadow-3xl transition-shadow">
+                <div className="text-center">
+                  <h2 className="text-xl sm:text-2xl font-bold mb-4 text-gray-200 dark:text-gray-300">학습 진도</h2>
+                  <p className="text-base text-gray-400 dark:text-gray-500 mb-6">
+                    학습 진도를 확인하고 관리하세요
+                  </p>
+                  <button className="w-full bg-gray-800 hover:bg-gray-700 text-white font-bold py-3 px-6 rounded-lg transition-all duration-200 text-base border border-gray-700">
+                    진도 확인하기
+                  </button>
+                </div>
               </div>
             </div>
-          )}
+            </div>
         </div>
-
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-6 max-w-2xl mx-auto">
-          <div className="p-4 sm:p-6 border border-gray-200 dark:border-gray-800 rounded-lg">
-            <h2 className="text-lg sm:text-xl font-semibold mb-3 sm:mb-4">시작하기</h2>
-            <p className="text-sm sm:text-base text-gray-600 dark:text-gray-400 mb-3 sm:mb-4">
-              언어 학습 여정을 시작해보세요
-            </p>
-            <button
-              onClick={() => {
-                if (!user) {
-                  alert('퀴즈를 시작하려면 먼저 로그인해주세요!');
-                  return;
-                }
-                if (!selectedDifficulty || !finalEnvironment) {
-                  alert('난이도와 환경을 모두 선택해주세요!');
-                  return;
-                }
-                window.location.href = `/quiz?difficulty=${selectedDifficulty}&environment=${encodeURIComponent(finalEnvironment)}`;
-              }}
-              className="w-full bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 sm:py-3 px-3 sm:px-4 rounded-lg transition-colors disabled:bg-gray-400 text-sm sm:text-base"
-              disabled={loading || !selectedDifficulty || !finalEnvironment}
-            >
-              퀴즈 시작하기
-            </button>
-          </div>
-          <div className="p-4 sm:p-6 border border-gray-200 dark:border-gray-800 rounded-lg">
-            <h2 className="text-lg sm:text-xl font-semibold mb-2">학습 진도</h2>
-            <p className="text-sm sm:text-base text-gray-600 dark:text-gray-400">
-              학습 진도를 확인하고 관리하세요
-            </p>
-          </div>
-        </div>
-      </div>
-    </main>
+      </main>
     </>
   )
 }
