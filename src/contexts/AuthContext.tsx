@@ -98,10 +98,37 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   };
 
   const signOut = async () => {
-    const { error } = await supabase.auth.signOut();
-    if (error) {
-      console.error('로그아웃 오류:', error.message);
-      alert('로그아웃 중 오류가 발생했습니다.');
+    try {
+      console.log('로그아웃 시도 중...');
+      
+      // 모바일에서 더 안정적인 로그아웃을 위해 scope를 'local'로 설정
+      const { error } = await supabase.auth.signOut({ scope: 'local' });
+      
+      if (error) {
+        console.error('로그아웃 오류:', error.message, error);
+        
+        // 특정 오류 타입에 따른 처리
+        if (error.message.includes('network') || error.message.includes('fetch')) {
+          // 네트워크 오류 시 로컬 세션만 제거
+          console.log('네트워크 오류로 인해 로컬 세션만 제거합니다.');
+          setUser(null);
+          setSession(null);
+          return;
+        }
+        
+        alert(`로그아웃 중 오류가 발생했습니다: ${error.message}`);
+      } else {
+        console.log('로그아웃 성공');
+        // 명시적으로 상태 초기화
+        setUser(null);
+        setSession(null);
+      }
+    } catch (err) {
+      console.error('로그아웃 예외:', err);
+      // 예외 발생 시에도 로컬 상태는 초기화
+      setUser(null);
+      setSession(null);
+      alert('로그아웃 중 예외가 발생했지만 로컬 세션을 제거했습니다.');
     }
   };
 
