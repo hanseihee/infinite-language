@@ -43,10 +43,14 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   }, []);
 
   const signInWithGoogle = async () => {
+    // 현재 환경에 맞는 리다이렉트 URL 생성
+    const redirectTo = `${window.location.origin}/auth/callback`;
+    console.log('OAuth redirectTo:', redirectTo); // 디버깅용
+    
     const { error } = await supabase.auth.signInWithOAuth({
       provider: 'google',
       options: {
-        redirectTo: `${window.location.origin}/auth/callback`
+        redirectTo: redirectTo
       }
     });
     

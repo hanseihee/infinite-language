@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import Dropdown from '@/components/Dropdown';
 import AuthButton from '@/components/AuthButton';
 import { useAuth } from '@/contexts/AuthContext';
@@ -20,6 +20,24 @@ export default function Home() {
   };
 
   const finalEnvironment = getFinalEnvironment();
+
+  // URL 파라미터에서 로그인 결과 확인
+  useEffect(() => {
+    const urlParams = new URLSearchParams(window.location.search);
+    const success = urlParams.get('success');
+    const error = urlParams.get('error');
+
+    if (success === 'login') {
+      // URL에서 success 파라미터 제거
+      window.history.replaceState({}, '', '/');
+    }
+
+    if (error) {
+      console.error('Auth error:', error);
+      // URL에서 error 파라미터 제거
+      window.history.replaceState({}, '', '/');
+    }
+  }, []);
 
   return (
     <main className="flex min-h-screen flex-col items-center justify-center p-4 sm:p-8 lg:p-24">

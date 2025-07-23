@@ -37,7 +37,7 @@ This is a **Next.js 15 App Router** language learning application called "Infini
 - **Framework**: Next.js 15 with App Router and Turbopack
 - **Styling**: Tailwind CSS v4 with dark mode support
 - **Language**: TypeScript with strict typing
-- **Authentication**: Supabase Auth with Google OAuth provider
+- **Authentication**: Supabase Auth with Google OAuth provider (PKCE flow)
 - **APIs**: OpenAI API for sentence generation, Google TTS API for audio
 - **Audio**: Web Speech API fallback + Google TTS for pronunciation features
 
@@ -68,11 +68,20 @@ To enable Google authentication, follow these steps:
    - Add authorized redirect URIs:
      - `https://[YOUR_SUPABASE_PROJECT].supabase.co/auth/v1/callback`
      - `http://localhost:3000/auth/callback` (for local development)
+     - `http://localhost:3001/auth/callback` (for local development)
+     - `https://infinite-language-one.vercel.app/auth/callback` (for production)
 
 2. **Supabase Dashboard**:
    - Go to Authentication → Providers
    - Enable Google provider
    - Enter Client ID and Client Secret from Google Cloud Console
+
+3. **Vercel Environment Variables** (for production):
+   - Go to Vercel Dashboard → Project Settings → Environment Variables
+   - Add the following variables:
+     - `OPENAI_API_KEY`: Your OpenAI API key
+     - `NEXT_PUBLIC_SUPABASE_URL`: Your Supabase project URL
+     - `NEXT_PUBLIC_SUPABASE_ANON_KEY`: Your Supabase anon key
 
 ### MCP Configuration
 
