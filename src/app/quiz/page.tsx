@@ -18,6 +18,23 @@ interface AnswerResult {
   correctAnswer: string;
 }
 
+interface UserProgress {
+  id: string;
+  user_id: string;
+  difficulty: string;
+  score: number;
+  rank: number;
+  users?: {
+    id: string;
+    email: string;
+    user_metadata?: {
+      name?: string;
+      full_name?: string;
+      avatar_url?: string;
+    };
+  };
+}
+
 function QuizPageContent() {
   const { user, loading } = useAuth();
   const searchParams = useSearchParams();
@@ -34,7 +51,7 @@ function QuizPageContent() {
   const [error, setError] = useState<string | null>(null);
   const [showResults, setShowResults] = useState(false);
   const [isPlayingTTS, setIsPlayingTTS] = useState(false);
-  const [rankingData, setRankingData] = useState<any>(null);
+  const [rankingData, setRankingData] = useState<UserProgress[] | null>(null);
   const [userRank, setUserRank] = useState<number | null>(null);
 
   const generateSentences = useCallback(async () => {
@@ -276,7 +293,7 @@ function QuizPageContent() {
     }
   };
 
-  const getUserDisplayName = (userProgress: any) => {
+  const getUserDisplayName = (userProgress: UserProgress) => {
     const userData = userProgress.users;
     if (!userData) return '익명 사용자';
     
@@ -441,7 +458,7 @@ function QuizPageContent() {
                 </h2>
                 <div className="bg-gray-50 dark:bg-gray-700 rounded-lg p-4 sm:p-6">
                   <div className="space-y-3">
-                    {rankingData.slice(0, 5).map((userProgress: any) => (
+                    {rankingData.slice(0, 5).map((userProgress: UserProgress) => (
                       <div 
                         key={userProgress.id}
                         className={`flex items-center justify-between p-3 rounded-lg ${
