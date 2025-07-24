@@ -13,10 +13,26 @@ export async function GET(request: NextRequest) {
   }
 
   try {
-    // 오늘 날짜를 한국 시간으로 계산
+    // 한국 시간 기준으로 오늘 날짜 계산 (자정 기준)
     const now = new Date();
-    const koreaTime = new Date(now.getTime() + (9 * 60 * 60 * 1000)); // UTC+9
+    const koreaTime = new Date(now.toLocaleString("en-US", {timeZone: "Asia/Seoul"}));
     const today = koreaTime.toISOString().split('T')[0]; // YYYY-MM-DD format
+    
+    // 한국 시간 기준 오늘 0시부터 내일 0시까지의 UTC 시간 범위
+    const koreaYear = koreaTime.getFullYear();
+    const koreaMonth = koreaTime.getMonth();
+    const koreaDate = koreaTime.getDate();
+    
+    // 한국 시간 오늘 0시 = UTC 어제 15시
+    const todayStartKorea = new Date(koreaYear, koreaMonth, koreaDate, 0, 0, 0, 0);
+    const todayStartUTC = new Date(todayStartKorea.getTime() - (9 * 60 * 60 * 1000));
+    
+    // 한국 시간 내일 0시 = UTC 오늘 15시  
+    const tomorrowStartKorea = new Date(koreaYear, koreaMonth, koreaDate + 1, 0, 0, 0, 0);
+    const tomorrowStartUTC = new Date(tomorrowStartKorea.getTime() - (9 * 60 * 60 * 1000));
+    
+    const todayStart = todayStartUTC.toISOString();
+    const todayEnd = tomorrowStartUTC.toISOString();
     
     // quiz_attempts 테이블이 있는지 확인하고 사용, 없으면 user_progress 사용
     let data, error;
@@ -40,8 +56,8 @@ export async function GET(request: NextRequest) {
         .from('user_progress')
         .select('id, created_at')
         .eq('user_id', user_id)
-        .gte('created_at', `${today}T00:00:00Z`)
-        .lt('created_at', `${today}T23:59:59Z`);
+        .gte('created_at', todayStart)
+        .lt('created_at', todayEnd);
       
       data = progressData;
       error = progressError;
@@ -93,7 +109,7 @@ export async function POST(request: NextRequest) {
 
     // 한국 시간 기준 날짜
     const now = new Date();
-    const koreaTime = new Date(now.getTime() + (9 * 60 * 60 * 1000));
+    const koreaTime = new Date(now.toLocaleString("en-US", {timeZone: "Asia/Seoul"}));
     const today = koreaTime.toISOString().split('T')[0];
 
     // quiz_attempts 테이블 사용 시도

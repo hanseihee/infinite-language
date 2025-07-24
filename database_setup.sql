@@ -36,7 +36,12 @@ CREATE INDEX IF NOT EXISTS idx_quiz_attempts_stats
 -- 4. RLS (Row Level Security) 설정
 ALTER TABLE quiz_attempts ENABLE ROW LEVEL SECURITY;
 
--- 5. RLS 정책 생성
+-- 5. RLS 정책 생성 (IF NOT EXISTS가 없으므로 DROP 후 CREATE)
+-- 기존 정책 삭제 (있다면)
+DROP POLICY IF EXISTS "Users can view their own quiz attempts" ON quiz_attempts;
+DROP POLICY IF EXISTS "Users can insert their own quiz attempts" ON quiz_attempts;
+DROP POLICY IF EXISTS "Users can update their own quiz attempts" ON quiz_attempts;
+
 -- 사용자는 자신의 기록만 볼 수 있음
 CREATE POLICY "Users can view their own quiz attempts"
   ON quiz_attempts FOR SELECT
