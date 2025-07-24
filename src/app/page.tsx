@@ -148,48 +148,26 @@ export default function Home() {
             </div>
           </div>
 
-          {/* 액션 카드 섹션 */}
-          <div className="max-w-4xl mx-auto">
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-6">
-              <div className="p-4 sm:p-6 lg:p-8 rounded-2xl shadow-2xl hover:shadow-3xl transition-shadow" style={{backgroundColor: '#191D24'}}>
-                <div className="text-center">
-                  <h2 className="text-lg sm:text-xl lg:text-2xl font-bold mb-3 text-slate-200 dark:text-slate-300">시작하기</h2>
-                  <p className="text-sm sm:text-base text-slate-400 dark:text-slate-500 mb-4 sm:mb-6">
-                    언어 학습 여정을 시작해보세요
-                  </p>
-                  <button
-                    onClick={() => {
-                      if (!user) {
-                        alert('퀴즈를 시작하려면 먼저 로그인해주세요!');
-                        return;
-                      }
-                      if (!selectedDifficulty || !finalEnvironment) {
-                        alert('난이도와 환경을 모두 선택해주세요!');
-                        return;
-                      }
-                      window.location.href = `/quiz?difficulty=${selectedDifficulty}&environment=${encodeURIComponent(finalEnvironment)}`;
-                    }}
-                    className="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-2.5 sm:py-3 px-4 sm:px-6 rounded-lg transition-all duration-200 disabled:bg-slate-600 text-sm sm:text-base shadow-lg hover:shadow-xl"
-                    disabled={loading || !selectedDifficulty || !finalEnvironment}
-                  >
-                    퀴즈 시작하기
-                  </button>
-                </div>
-              </div>
-              
-              <div className="p-4 sm:p-6 lg:p-8 rounded-2xl shadow-2xl hover:shadow-3xl transition-shadow" style={{backgroundColor: '#191D24'}}>
-                <div className="text-center">
-                  <h2 className="text-lg sm:text-xl lg:text-2xl font-bold mb-3 text-slate-200 dark:text-slate-300">학습 진도</h2>
-                  <p className="text-sm sm:text-base text-slate-400 dark:text-slate-500 mb-4 sm:mb-6">
-                    학습 진도를 확인하고 관리하세요
-                  </p>
-                  <button className="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-2.5 sm:py-3 px-4 sm:px-6 rounded-lg transition-all duration-200 text-sm sm:text-base shadow-lg hover:shadow-xl">
-                    진도 확인하기
-                  </button>
-                </div>
-              </div>
-            </div>
-            </div>
+          {/* 시작 버튼 섹션 */}
+          <div className="max-w-md mx-auto text-center">
+            <button
+              onClick={() => {
+                if (!user) {
+                  alert('퀴즈를 시작하려면 먼저 로그인해주세요!');
+                  return;
+                }
+                if (!selectedDifficulty || !finalEnvironment) {
+                  alert('난이도와 환경을 모두 선택해주세요!');
+                  return;
+                }
+                window.location.href = `/quiz?difficulty=${selectedDifficulty}&environment=${encodeURIComponent(finalEnvironment)}`;
+              }}
+              className="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-4 px-8 rounded-xl transition-all duration-200 disabled:bg-slate-600 text-lg shadow-xl hover:shadow-2xl disabled:opacity-50"
+              disabled={loading || !selectedDifficulty || !finalEnvironment}
+            >
+              퀴즈 시작하기
+            </button>
+          </div>
         </div>
       </main>
     </>
