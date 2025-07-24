@@ -4,6 +4,7 @@ import { useState, useEffect, useCallback, Suspense } from 'react';
 import { useSearchParams } from 'next/navigation';
 import WordSelector from '@/components/WordSelector';
 import { useAuth } from '@/contexts/AuthContext';
+import { supabase } from '@/lib/supabase';
 
 interface Sentence {
   id: number;
@@ -243,35 +244,74 @@ function QuizPageContent() {
     });
 
     try {
-      const response = await fetch('/api/progress', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          user_id: user.id,
-          difficulty,
-          correct_answers: correctCount,
-          total_questions: totalQuestions
-        }),
-      });
+      // 기존 진척도 조회
+      const { data: existingProgress, error: selectError } = await supabase
+        .from('user_progress')
+        .select('*')
+        .eq('user_id', user.id)
+        .eq('difficulty', difficulty)
+        .single();
 
-      const data = await response.json();
-      
-      if (data.success) {
-        console.log('✅ Progress saved successfully:', data);
-        // 성공 메시지를 사용자에게 표시할 수 있습니다
-        if (data.message) {
-          console.log('Server message:', data.message);
-        }
-        
-        // 점수 저장 후 랭킹 정보 가져오기
-        await fetchRankingData();
-      } else {
-        console.error('❌ Failed to save progress:', data.error);
+      if (selectError && selectError.code !== 'PGRST116') {
+        console.error('❌ Error fetching existing progress:', selectError);
+        return;
       }
+
+      const newScore = correctCount;
+      
+      if (existingProgress) {
+        // 기존 기록이 있으면 점수 누적
+        const updatedScore = existingProgress.score + newScore;
+        
+        console.log('📈 Updating existing progress:', {
+          previous_score: existingProgress.score,
+          new_score: newScore,
+          total_score: updatedScore
+        });
+        
+        const { data, error } = await supabase
+          .from('user_progress')
+          .update({ 
+            score: updatedScore,
+            updated_at: new Date().toISOString()
+          })
+          .eq('user_id', user.id)
+          .eq('difficulty', difficulty)
+          .select();
+
+        if (error) {
+          console.error('❌ Error updating progress:', error);
+          return;
+        }
+
+        console.log('✅ Progress updated successfully:', data[0]);
+      } else {
+        // 새로운 기록 생성
+        console.log('🆕 Creating new progress record for user:', user.id);
+        
+        const { data, error } = await supabase
+          .from('user_progress')
+          .insert([{
+            user_id: user.id,
+            difficulty,
+            score: newScore,
+            created_at: new Date().toISOString(),
+            updated_at: new Date().toISOString()
+          }])
+          .select();
+
+        if (error) {
+          console.error('❌ Error creating progress:', error);
+          return;
+        }
+
+        console.log('✅ New progress created successfully:', data[0]);
+      }
+      
+      // 점수 저장 후 랭킹 정보 가져오기
+      await fetchRankingData();
     } catch (error) {
-      console.error('❌ Network error saving progress:', error);
+      console.error('❌ Error saving progress:', error);
     }
   };
 
