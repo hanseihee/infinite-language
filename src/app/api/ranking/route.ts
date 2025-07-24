@@ -1,6 +1,23 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { createClient } from '@supabase/supabase-js';
 
+interface UserProgress {
+  id: string;
+  user_id: string;
+  difficulty: string;
+  score: number;
+  rank: number;
+  users?: {
+    id: string;
+    email: string;
+    user_metadata?: {
+      name?: string;
+      full_name?: string;
+      avatar_url?: string;
+    };
+  };
+}
+
 const supabase = createClient(
   process.env.NEXT_PUBLIC_SUPABASE_URL!,
   process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
@@ -43,7 +60,7 @@ export async function GET(request: NextRequest) {
         data = result.data || [];
         error = result.error;
       } catch (err) {
-        console.log('user_progress 테이블이 존재하지 않습니다.');
+        console.log('user_progress 테이블이 존재하지 않습니다.', err);
         return NextResponse.json({
           success: true,
           data: [],
@@ -100,7 +117,7 @@ export async function GET(request: NextRequest) {
         data = result.data || [];
         error = result.error;
       } catch (err) {
-        console.log('user_progress 테이블이 존재하지 않습니다.');
+        console.log('user_progress 테이블이 존재하지 않습니다.', err);
         return NextResponse.json({
           success: true,
           data: {},
@@ -124,21 +141,21 @@ export async function GET(request: NextRequest) {
         }
         acc[item.difficulty].push(item);
         return acc;
-      }, {} as Record<string, any[]>);
+      }, {} as Record<string, UserProgress[]>);
 
       // 각 난이도별로 순위 계산
       const rankedData = Object.keys(groupedData).reduce((acc, difficulty) => {
         acc[difficulty] = groupedData[difficulty]
-          .sort((a, b) => b.score - a.score)
-          .map((item, index) => ({
+          .sort((a: UserProgress, b: UserProgress) => b.score - a.score)
+          .map((item: UserProgress, index: number) => ({
             ...item,
             rank: index + 1
           }));
         return acc;
-      }, {} as Record<string, any[]>);
+      }, {} as Record<string, UserProgress[]>);
 
       // 사용자 순위 계산 (모든 난이도)
-      let userRanks = {};
+      const userRanks: Record<string, number | null> = {};
       if (user_id) {
         Object.keys(rankedData).forEach(difficulty => {
           const userEntry = rankedData[difficulty].find(item => item.user_id === user_id);

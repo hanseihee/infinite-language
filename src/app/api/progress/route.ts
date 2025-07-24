@@ -40,8 +40,8 @@ export async function POST(request: NextRequest) {
       
       existingProgress = result.data;
       selectError = result.error;
-    } catch (error) {
-      console.log('user_progress 테이블이 존재하지 않습니다. 임시 저장소를 사용합니다.');
+    } catch (err) {
+      console.log('user_progress 테이블이 존재하지 않습니다. 임시 저장소를 사용합니다.', err);
       // 테이블이 없을 경우 로컬 스토리지나 다른 방법으로 처리할 수 있습니다.
       return NextResponse.json({
         success: true,

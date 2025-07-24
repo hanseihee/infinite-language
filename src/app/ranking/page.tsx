@@ -37,7 +37,7 @@ export default function RankingPage() {
 
   useEffect(() => {
     fetchRankingData();
-  }, [user]);
+  }, [user]); // eslint-disable-line react-hooks/exhaustive-deps
 
   const fetchRankingData = async () => {
     setIsLoading(true);
@@ -189,7 +189,7 @@ export default function RankingPage() {
                 
                 {rankingData[selectedDifficulty] && rankingData[selectedDifficulty].length > 0 ? (
                   <div className="space-y-3">
-                    {rankingData[selectedDifficulty].slice(0, 50).map((userProgress, index) => (
+                    {rankingData[selectedDifficulty].slice(0, 50).map((userProgress) => (
                       <div 
                         key={userProgress.id}
                         className={`flex items-center justify-between p-4 rounded-lg transition-all ${
