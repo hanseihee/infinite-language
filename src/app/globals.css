@@ -42,3 +42,12 @@ body {
     background-position: 0% 0%;
   }
 }
+
+.gradient-loading {
+  background: linear-gradient(90deg, #ff0066, #ff8c42, #ffd93d, #6bcf7f, #4d9de0, #9d4edd, #e15759, #ff7b54, #42c2ff, #7209b7, #ff0066);
+  background-size: 400% 100%;
+  background-clip: text;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  animation: gradient-flow 3s linear infinite;
+}

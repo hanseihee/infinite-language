@@ -5,7 +5,7 @@ import { useState, useEffect } from 'react';
 interface WordSelectorProps {
   words: string[];
   onWordsChange: (words: string[]) => void;
-  onAllWordsSelected?: () => void;
+  onAllWordsSelected?: (allWords: string[]) => void;
 }
 
 export default function WordSelector({ words, onWordsChange, onAllWordsSelected }: WordSelectorProps) {
@@ -54,10 +54,10 @@ export default function WordSelector({ words, onWordsChange, onAllWordsSelected 
     
     // 모든 단어가 선택되었는지 확인하고 콜백 호출
     if (newSelectedWords.length === words.length && onAllWordsSelected) {
-      // 약간의 지연을 두고 콜백 호출 (사용자가 선택을 확인할 수 있도록)
+      // 선택된 모든 단어를 콜백에 직접 전달
       setTimeout(() => {
-        onAllWordsSelected();
-      }, 500);
+        onAllWordsSelected(newSelectedWords);
+      }, 100);
     }
   };
 

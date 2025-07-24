@@ -193,36 +193,38 @@ function QuizPageContent() {
     }
   };
 
-  const checkCurrentAnswer = () => {
+  const checkAnswerWithText = (answerText: string) => {
     const currentSentence = sentences[currentSentenceIndex];
     const originalSentence = currentSentence.originalSentence
       .replace(/[?!.]/g, '')
       .toLowerCase()
       .trim();
-    const userSentence = currentAnswer.toLowerCase().trim();
+    const userSentence = answerText.toLowerCase().trim();
     
     const isCorrect = originalSentence === userSentence;
     
     const result: AnswerResult = {
       isCorrect,
-      userAnswer: currentAnswer,
+      userAnswer: answerText,
       correctAnswer: currentSentence.originalSentence
     };
 
     const newAnswers = [...userAnswers];
-    newAnswers[currentSentenceIndex] = currentAnswer;
+    newAnswers[currentSentenceIndex] = answerText;
     setUserAnswers(newAnswers);
 
     const newResults = [...answerResults];
     newResults[currentSentenceIndex] = result;
     setAnswerResults(newResults);
-
+    
     setShowFeedback(true);
     
-    // 정답을 음성으로 읽어주기
+    // TTS 음성 재생
     playTTS(currentSentence.originalSentence);
-    
-    return result;
+  };
+
+  const checkCurrentAnswer = () => {
+    checkAnswerWithText(currentAnswer);
   };
 
   const handleTTSClick = () => {
@@ -394,8 +396,7 @@ function QuizPageContent() {
     return (
       <div className="min-h-screen flex items-center justify-center">
         <div className="text-center">
-          <div className="animate-spin rounded-full h-32 w-32 border-b-2 border-blue-500 mx-auto mb-4"></div>
-          <p className="text-lg">로딩 중...</p>
+          <p className="text-2xl gradient-loading font-bold">로딩 중...</p>
         </div>
       </div>
     );
@@ -424,8 +425,7 @@ function QuizPageContent() {
     return (
       <div className="min-h-screen flex items-center justify-center">
         <div className="text-center">
-          <div className="animate-spin rounded-full h-32 w-32 border-b-2 border-blue-500 mx-auto mb-4"></div>
-          <p className="text-lg">문장을 생성하고 있습니다...</p>
+          <p className="text-2xl gradient-loading font-bold">문장을 생성하고 있습니다...</p>
         </div>
       </div>
     );
@@ -601,9 +601,11 @@ function QuizPageContent() {
             <WordSelector
               words={currentSentence.shuffledWords}
               onWordsChange={handleWordsChange}
-              onAllWordsSelected={() => {
+              onAllWordsSelected={(allWords) => {
                 if (!showFeedback) {
-                  checkCurrentAnswer();
+                  // 전달받은 완전한 단어 배열로 즉시 답안 확인
+                  const completeAnswer = allWords.join(' ');
+                  checkAnswerWithText(completeAnswer);
                 }
               }}
             />
@@ -696,8 +698,7 @@ export default function QuizPage() {
     <Suspense fallback={
       <div className="min-h-screen flex items-center justify-center">
         <div className="text-center">
-          <div className="animate-spin rounded-full h-32 w-32 border-b-2 border-blue-500 mx-auto mb-4"></div>
-          <p className="text-lg">페이지를 로딩하고 있습니다...</p>
+          <p className="text-2xl gradient-loading font-bold">페이지를 로딩하고 있습니다...</p>
         </div>
       </div>
     }>

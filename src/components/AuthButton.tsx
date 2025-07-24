@@ -15,9 +15,8 @@ export default function AuthButton({ mobile = false, onAction }: AuthButtonProps
 
   if (loading) {
     return (
-      <div className="flex items-center space-x-2">
-        <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-blue-500"></div>
-        <span className="text-sm text-slate-400">로딩 중...</span>
+      <div className="flex items-center">
+        <span className="text-sm gradient-loading font-medium">로딩 중...</span>
       </div>
     );
   }

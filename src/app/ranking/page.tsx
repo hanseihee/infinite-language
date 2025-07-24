@@ -22,8 +22,7 @@ export default function RankingPage() {
         <Header />
         <div className="min-h-screen flex items-center justify-center" style={{backgroundColor: '#14171D'}}>
           <div className="text-center">
-            <div className="animate-spin rounded-full h-32 w-32 border-b-2 border-blue-500 mx-auto mb-4"></div>
-            <p className="text-lg text-slate-200">랭킹 데이터를 불러오는 중...</p>
+            <p className="text-2xl gradient-loading font-bold">랭킹 데이터를 불러오는 중...</p>
           </div>
         </div>
       </>
