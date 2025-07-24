@@ -10,7 +10,20 @@ export async function POST(request: NextRequest) {
   try {
     const { user_id, difficulty, correct_answers, total_questions } = await request.json();
 
+    console.log('📝 Progress API called with:', {
+      user_id,
+      difficulty,
+      correct_answers,
+      total_questions
+    });
+
     if (!user_id || !difficulty || correct_answers === undefined || !total_questions) {
+      console.error('❌ Missing required parameters:', {
+        user_id: !!user_id,
+        difficulty: !!difficulty,
+        correct_answers: correct_answers !== undefined,
+        total_questions: !!total_questions
+      });
       return NextResponse.json(
         { error: '필수 파라미터가 누락되었습니다.' },
         { status: 400 }
@@ -39,14 +52,16 @@ export async function POST(request: NextRequest) {
     
     // 테이블이 존재하지 않는 경우 처리
     if (selectError && (selectError.message?.includes('relation') || selectError.code === '42P01')) {
-      console.log('user_progress 테이블이 존재하지 않습니다:', selectError);
+      console.log('⚠️ user_progress 테이블이 존재하지 않습니다:', selectError.message);
+      console.log('💡 Supabase Dashboard에서 테이블을 생성해주세요. create_user_progress_table.sql 파일을 참조하세요.');
       return NextResponse.json({
         success: true,
         message: '테이블이 준비되지 않았습니다. 퀴즈는 완료되었지만 점수가 저장되지 않았습니다.',
         data: { user_id, difficulty, score: correct_answers },
         previous_score: 0,
         new_score: correct_answers,
-        total_score: correct_answers
+        total_score: correct_answers,
+        table_missing: true
       });
     }
 
@@ -64,6 +79,12 @@ export async function POST(request: NextRequest) {
       // 기존 기록이 있으면 점수 누적
       const updatedScore = existingProgress.score + newScore;
       
+      console.log('📈 Updating existing progress:', {
+        previous_score: existingProgress.score,
+        new_score: newScore,
+        total_score: updatedScore
+      });
+      
       const { data, error } = await supabase
         .from('user_progress')
         .update({ 
@@ -75,13 +96,14 @@ export async function POST(request: NextRequest) {
         .select();
 
       if (error) {
-        console.error('Error updating progress:', error);
+        console.error('❌ Error updating progress:', error);
         return NextResponse.json(
           { error: '진척도 업데이트 중 오류가 발생했습니다.' },
           { status: 500 }
         );
       }
 
+      console.log('✅ Progress updated successfully:', data[0]);
       return NextResponse.json({ 
         success: true, 
         message: '진척도가 업데이트되었습니다.',
@@ -92,6 +114,8 @@ export async function POST(request: NextRequest) {
       });
     } else {
       // 새로운 기록 생성
+      console.log('🆕 Creating new progress record for user:', user_id);
+      
       const { data, error } = await supabase
         .from('user_progress')
         .insert([{
@@ -104,13 +128,14 @@ export async function POST(request: NextRequest) {
         .select();
 
       if (error) {
-        console.error('Error creating progress:', error);
+        console.error('❌ Error creating progress:', error);
         return NextResponse.json(
           { error: '진척도 생성 중 오류가 발생했습니다.' },
           { status: 500 }
         );
       }
 
+      console.log('✅ New progress created successfully:', data[0]);
       return NextResponse.json({ 
         success: true, 
         message: '새로운 진척도가 생성되었습니다.',

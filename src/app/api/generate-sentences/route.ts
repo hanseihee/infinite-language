@@ -16,7 +16,7 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    const prompt = `Generate 10 unique English sentences for language learning practice with the following criteria:
+    const prompt = `Generate 5 unique English sentences for language learning practice with the following criteria:
 - Difficulty level: ${difficulty}
 - Context/Environment: ${environment}
 **If ${difficulty} = "쉬움"**
@@ -53,7 +53,8 @@ Example format:
   {"sentence": "Do you have this in another size?", "korean": "다른 사이즈가 있나요?"},
   {"sentence": "I would like to make a reservation.", "korean": "예약하고 싶습니다."},
   {"sentence": "How much does this cost?", "korean": "이것은 얼마인가요?"},
-  {"sentence": "Can I get the check please?", "korean": "계산서 주세요."}
+  {"sentence": "Can I get the check please?", "korean": "계산서 주세요."},
+  {"sentence": "Where is the nearest subway station?", "korean": "가장 가까운 지하철역이 어디인가요?"}
 ]`;
 
     const completion = await openai.chat.completions.create({

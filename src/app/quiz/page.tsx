@@ -211,7 +211,17 @@ function QuizPageContent() {
   };
 
   const saveProgressToSupabase = async (correctCount: number, totalQuestions: number) => {
-    if (!user || !difficulty) return;
+    if (!user || !difficulty) {
+      console.warn('Cannot save progress: missing user or difficulty');
+      return;
+    }
+
+    console.log('Saving progress:', {
+      user_id: user.id,
+      difficulty,
+      correct_answers: correctCount,
+      total_questions: totalQuestions
+    });
 
     try {
       const response = await fetch('/api/progress', {
@@ -230,12 +240,16 @@ function QuizPageContent() {
       const data = await response.json();
       
       if (data.success) {
-        console.log('Progress saved successfully:', data);
+        console.log('✅ Progress saved successfully:', data);
+        // 성공 메시지를 사용자에게 표시할 수 있습니다
+        if (data.message) {
+          console.log('Server message:', data.message);
+        }
       } else {
-        console.error('Failed to save progress:', data.error);
+        console.error('❌ Failed to save progress:', data.error);
       }
     } catch (error) {
-      console.error('Error saving progress:', error);
+      console.error('❌ Network error saving progress:', error);
     }
   };
 
