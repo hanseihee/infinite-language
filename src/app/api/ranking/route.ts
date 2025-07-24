@@ -69,7 +69,7 @@ export async function GET(request: NextRequest) {
       let userRank = null;
       if (user_id) {
         const userEntry = rankingWithPosition.find(item => item.user_id === user_id);
-        userRank = userEntry ? userEntry.rank : null;
+        userRank = userEntry ? (userEntry.rank ?? null) : null;
       }
 
       return NextResponse.json({ 
@@ -132,7 +132,7 @@ export async function GET(request: NextRequest) {
       if (user_id) {
         Object.keys(rankedData).forEach(difficulty => {
           const userEntry = rankedData[difficulty].find(item => item.user_id === user_id);
-          userRanks[difficulty] = userEntry ? userEntry.rank : null;
+          userRanks[difficulty] = userEntry ? (userEntry.rank ?? null) : null;
         });
       }
 
