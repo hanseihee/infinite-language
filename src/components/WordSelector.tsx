@@ -5,9 +5,10 @@ import { useState, useEffect } from 'react';
 interface WordSelectorProps {
   words: string[];
   onWordsChange: (words: string[]) => void;
+  onAllWordsSelected?: () => void;
 }
 
-export default function WordSelector({ words, onWordsChange }: WordSelectorProps) {
+export default function WordSelector({ words, onWordsChange, onAllWordsSelected }: WordSelectorProps) {
   const [selectedWords, setSelectedWords] = useState<string[]>([]);
   const [usedWords, setUsedWords] = useState<Set<number>>(new Set());
 
@@ -50,6 +51,14 @@ export default function WordSelector({ words, onWordsChange }: WordSelectorProps
     setSelectedWords(newSelectedWords);
     setUsedWords(newUsedWords);
     onWordsChange(newSelectedWords);
+    
+    // 모든 단어가 선택되었는지 확인하고 콜백 호출
+    if (newSelectedWords.length === words.length && onAllWordsSelected) {
+      // 약간의 지연을 두고 콜백 호출 (사용자가 선택을 확인할 수 있도록)
+      setTimeout(() => {
+        onAllWordsSelected();
+      }, 500);
+    }
   };
 
   const handleClear = () => {

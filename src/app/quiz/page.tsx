@@ -233,20 +233,42 @@ function QuizPageContent() {
   };
 
   const saveProgressToSupabase = async (correctCount: number, totalQuestions: number) => {
-    if (!user || !difficulty) {
-      console.warn('Cannot save progress: missing user or difficulty');
+    if (!user || !difficulty || !environment) {
+      console.warn('Cannot save progress: missing user, difficulty, or environment');
       return;
     }
 
     console.log('Saving progress:', {
       user_id: user.id,
       difficulty,
+      environment,
       correct_answers: correctCount,
       total_questions: totalQuestions
     });
 
     try {
-      // 기존 진척도 조회
+      // 1. quiz_attempts 테이블에 시도 기록 저장
+      const quizAttemptResponse = await fetch('/api/quiz-attempts', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          user_id: user.id,
+          difficulty,
+          environment,
+          score: correctCount,
+          total_questions: totalQuestions
+        }),
+      });
+
+      if (quizAttemptResponse.ok) {
+        console.log('✅ Quiz attempt saved successfully');
+      } else {
+        console.warn('⚠️ Failed to save quiz attempt, continuing with user_progress update');
+      }
+
+      // 2. 기존 user_progress 테이블 업데이트 (랭킹용)
       const { data: existingProgress, error: selectError } = await supabase
         .from('user_progress')
         .select('*')
@@ -579,6 +601,11 @@ function QuizPageContent() {
             <WordSelector
               words={currentSentence.shuffledWords}
               onWordsChange={handleWordsChange}
+              onAllWordsSelected={() => {
+                if (!showFeedback) {
+                  checkCurrentAnswer();
+                }
+              }}
             />
 
             {currentAnswer && (

@@ -14,23 +14,21 @@ export default function Header() {
     <header className="w-full sticky top-0 z-50" style={{backgroundColor: '#14171D'}}>
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between items-center h-16">
-          {/* 랭킹 메뉴 (데스크톱 - 왼쪽) */}
-          <div className="hidden md:flex items-center space-x-6">
-            <Link 
-              href="/ranking" 
-              className="text-slate-300 hover:text-blue-400 px-3 py-2 text-sm font-medium transition-colors"
-            >
-              랭킹
-            </Link>
-          </div>
-
-          {/* 로고/브랜드 영역 (중앙) */}
-          <div className="flex items-center">
+          {/* 로고/브랜드 영역과 랭킹 메뉴 (왼쪽) */}
+          <div className="flex items-center space-x-6">
             <Link href="/">
               <h1 className="text-lg sm:text-xl font-bold bg-gradient-to-r from-purple-600 via-blue-600 to-cyan-500 bg-clip-text text-transparent cursor-pointer">
                 Infinite Language
               </h1>
             </Link>
+            <div className="hidden md:flex">
+              <Link 
+                href="/ranking" 
+                className="text-slate-300 hover:text-blue-400 px-3 py-2 text-sm font-medium transition-colors"
+              >
+                랭킹
+              </Link>
+            </div>
           </div>
 
           {/* 데스크톱 네비게이션 메뉴 (오른쪽) */}

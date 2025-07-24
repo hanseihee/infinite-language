@@ -10,6 +10,7 @@ export default function Home() {
   const [selectedDifficulty, setSelectedDifficulty] = useState<string>('');
   const [selectedEnvironment, setSelectedEnvironment] = useState<string>('');
   const [customEnvironment, setCustomEnvironment] = useState<string>('');
+  const [remainingAttempts, setRemainingAttempts] = useState<number | null>(null);
 
   const difficultyOptions = ['쉬움', '중간', '어려움'];
   const environmentOptions = ['일상', '회사', '쇼핑', '여행', '레스토랑', '병원', '학교', '공항'];
@@ -20,6 +21,31 @@ export default function Home() {
   };
 
   const finalEnvironment = getFinalEnvironment();
+
+  // 사용자의 일일 퀴즈 시도 횟수 확인
+  const checkQuizAttempts = async () => {
+    if (!user) return null;
+
+    try {
+      const response = await fetch(`/api/quiz-attempts?user_id=${user.id}`);
+      const data = await response.json();
+      
+      if (data.success) {
+        setRemainingAttempts(data.data.remaining_attempts);
+        return data.data;
+      }
+    } catch (error) {
+      console.error('Error checking quiz attempts:', error);
+    }
+    return null;
+  };
+
+  // 사용자가 로그인하면 시도 횟수 확인
+  useEffect(() => {
+    if (user) {
+      checkQuizAttempts();
+    }
+  }, [user]);
 
   // URL 파라미터에서 로그인 결과 확인
   useEffect(() => {
@@ -148,22 +174,48 @@ export default function Home() {
             </div>
           </div>
 
+          {/* 일일 시도 횟수 표시 */}
+          {user && remainingAttempts !== null && (
+            <div className="max-w-md mx-auto text-center mb-4">
+              <div className="bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 rounded-lg p-3">
+                <p className="text-sm text-blue-800 dark:text-blue-200">
+                  <strong>오늘 남은 퀴즈 횟수:</strong> {remainingAttempts}/10
+                </p>
+                {remainingAttempts === 0 && (
+                  <p className="text-xs text-red-600 dark:text-red-400 mt-1">
+                    내일 다시 시도해주세요!
+                  </p>
+                )}
+              </div>
+            </div>
+          )}
+
           {/* 시작 버튼 섹션 */}
           <div className="max-w-md mx-auto text-center">
             <button
-              onClick={() => {
+              onClick={async () => {
                 if (!user) {
+                  // 로그인이 필요하다는 메시지와 함께 페이지 상단(헤더)으로 스크롤
                   alert('퀴즈를 시작하려면 먼저 로그인해주세요!');
+                  window.scrollTo({ top: 0, behavior: 'smooth' });
                   return;
                 }
                 if (!selectedDifficulty || !finalEnvironment) {
                   alert('난이도와 환경을 모두 선택해주세요!');
                   return;
                 }
+                
+                // 일일 퀴즈 시도 횟수 확인
+                const attemptData = await checkQuizAttempts();
+                if (attemptData && !attemptData.can_play) {
+                  alert(`오늘은 더 이상 퀴즈를 플레이할 수 없습니다.\n일일 최대 10번까지 가능합니다.\n오늘 시도 횟수: ${attemptData.attempts_today}/10`);
+                  return;
+                }
+                
                 window.location.href = `/quiz?difficulty=${selectedDifficulty}&environment=${encodeURIComponent(finalEnvironment)}`;
               }}
               className="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-4 px-8 rounded-xl transition-all duration-200 disabled:bg-slate-600 text-lg shadow-xl hover:shadow-2xl disabled:opacity-50"
-              disabled={loading || !selectedDifficulty || !finalEnvironment}
+              disabled={loading || !selectedDifficulty || !finalEnvironment || (remainingAttempts !== null && remainingAttempts === 0)}
             >
               퀴즈 시작하기
             </button>
