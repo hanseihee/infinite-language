@@ -26,26 +26,23 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    // 기존 진척도 조회 (테이블이 없을 경우 임시 저장소 사용)
-    let existingProgress = null;
-    let selectError = null;
+    // 기존 진척도 조회
+    const result = await supabase
+      .from('user_progress')
+      .select('*')
+      .eq('user_id', user_id)
+      .eq('difficulty', difficulty)
+      .single();
     
-    try {
-      const result = await supabase
-        .from('user_progress')
-        .select('*')
-        .eq('user_id', user_id)
-        .eq('difficulty', difficulty)
-        .single();
-      
-      existingProgress = result.data;
-      selectError = result.error;
-    } catch (err) {
-      console.log('user_progress 테이블이 존재하지 않습니다. 임시 저장소를 사용합니다.', err);
-      // 테이블이 없을 경우 로컬 스토리지나 다른 방법으로 처리할 수 있습니다.
+    const existingProgress = result.data;
+    const selectError = result.error;
+    
+    // 테이블이 존재하지 않는 경우 처리
+    if (selectError && (selectError.message?.includes('relation') || selectError.code === '42P01')) {
+      console.log('user_progress 테이블이 존재하지 않습니다:', selectError);
       return NextResponse.json({
         success: true,
-        message: '테이블이 준비되지 않았습니다. 관리자에게 문의하세요.',
+        message: '테이블이 준비되지 않았습니다. 퀴즈는 완료되었지만 점수가 저장되지 않았습니다.',
         data: { user_id, difficulty, score: correct_answers },
         previous_score: 0,
         new_score: correct_answers,
@@ -145,11 +142,24 @@ export async function GET(request: NextRequest) {
     }
 
     // 사용자의 모든 난이도별 진척도 조회
-    const { data, error } = await supabase
+    const result = await supabase
       .from('user_progress')
       .select('*')
       .eq('user_id', user_id)
       .order('difficulty');
+
+    const data = result.data;
+    const error = result.error;
+
+    // 테이블이 존재하지 않는 경우 처리
+    if (error && (error.message?.includes('relation') || error.code === '42P01')) {
+      console.log('user_progress 테이블이 존재하지 않습니다:', error);
+      return NextResponse.json({ 
+        success: true, 
+        data: [],
+        message: '아직 진척도 데이터가 없습니다.'
+      });
+    }
 
     if (error) {
       console.error('Error fetching progress:', error);

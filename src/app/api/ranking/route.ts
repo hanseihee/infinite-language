@@ -39,34 +39,32 @@ export async function GET(request: NextRequest) {
         );
       }
 
-      let data = [];
-      let error = null;
+      const result = await supabase
+        .from('user_progress')
+        .select(`
+          *,
+          users:user_id (
+            id,
+            email,
+            user_metadata
+          )
+        `)
+        .eq('difficulty', difficulty)
+        .order('score', { ascending: false })
+        .limit(100);
       
-      try {
-        const result = await supabase
-          .from('user_progress')
-          .select(`
-            *,
-            users:user_id (
-              id,
-              email,
-              user_metadata
-            )
-          `)
-          .eq('difficulty', difficulty)
-          .order('score', { ascending: false })
-          .limit(100);
-        
-        data = result.data || [];
-        error = result.error;
-      } catch (err) {
-        console.log('user_progress 테이블이 존재하지 않습니다.', err);
+      const data = result.data || [];
+      const error = result.error;
+      
+      // 테이블이 존재하지 않는 경우 처리
+      if (error && (error.message?.includes('relation') || error.code === 'PGRST116')) {
+        console.log('user_progress 테이블이 존재하지 않습니다:', error);
         return NextResponse.json({
           success: true,
           data: [],
           user_rank: null,
           difficulty,
-          message: '아직 랭킹 데이터가 없습니다.'
+          message: '아직 랭킹 데이터가 없습니다. 테이블이 준비되지 않았습니다.'
         });
       }
 
@@ -98,31 +96,29 @@ export async function GET(request: NextRequest) {
       });
     } else {
       // 모든 난이도의 랭킹 조회
-      let data = [];
-      let error = null;
+      const result = await supabase
+        .from('user_progress')
+        .select(`
+          *,
+          users:user_id (
+            id,
+            email,
+            user_metadata
+          )
+        `)
+        .order('score', { ascending: false });
       
-      try {
-        const result = await supabase
-          .from('user_progress')
-          .select(`
-            *,
-            users:user_id (
-              id,
-              email,
-              user_metadata
-            )
-          `)
-          .order('score', { ascending: false });
-        
-        data = result.data || [];
-        error = result.error;
-      } catch (err) {
-        console.log('user_progress 테이블이 존재하지 않습니다.', err);
+      const data = result.data || [];
+      const error = result.error;
+      
+      // 테이블이 존재하지 않는 경우 처리
+      if (error && (error.message?.includes('relation') || error.code === 'PGRST116')) {
+        console.log('user_progress 테이블이 존재하지 않습니다:', error);
         return NextResponse.json({
           success: true,
           data: {},
           user_ranks: {},
-          message: '아직 랭킹 데이터가 없습니다.'
+          message: '아직 랭킹 데이터가 없습니다. 테이블이 준비되지 않았습니다.'
         });
       }
 
