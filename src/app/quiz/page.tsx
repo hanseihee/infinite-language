@@ -210,6 +210,35 @@ function QuizPageContent() {
     playTTS(currentSentence.originalSentence);
   };
 
+  const saveProgressToSupabase = async (correctCount: number, totalQuestions: number) => {
+    if (!user || !difficulty) return;
+
+    try {
+      const response = await fetch('/api/progress', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          user_id: user.id,
+          difficulty,
+          correct_answers: correctCount,
+          total_questions: totalQuestions
+        }),
+      });
+
+      const data = await response.json();
+      
+      if (data.success) {
+        console.log('Progress saved successfully:', data);
+      } else {
+        console.error('Failed to save progress:', data.error);
+      }
+    } catch (error) {
+      console.error('Error saving progress:', error);
+    }
+  };
+
   const goToNextSentence = () => {
     if (!showFeedback) {
       checkCurrentAnswer();
@@ -221,6 +250,8 @@ function QuizPageContent() {
       setCurrentAnswer('');
       setShowFeedback(false);
     } else {
+      const correctCount = answerResults.filter(result => result.isCorrect).length;
+      saveProgressToSupabase(correctCount, sentences.length);
       setShowResults(true);
     }
   };

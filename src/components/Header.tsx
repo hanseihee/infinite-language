@@ -1,5 +1,6 @@
 'use client';
 
+import Link from 'next/link';
 import AuthButton from '@/components/AuthButton';
 
 export default function Header() {
@@ -9,15 +10,23 @@ export default function Header() {
         <div className="flex justify-between items-center h-16">
           {/* 로고/브랜드 영역 */}
           <div className="flex items-center">
-            <h1 className="text-lg sm:text-xl font-bold bg-gradient-to-r from-purple-600 via-blue-600 to-cyan-500 bg-clip-text text-transparent">
-              Infinite Language
-            </h1>
+            <Link href="/">
+              <h1 className="text-lg sm:text-xl font-bold bg-gradient-to-r from-purple-600 via-blue-600 to-cyan-500 bg-clip-text text-transparent cursor-pointer">
+                Infinite Language
+              </h1>
+            </Link>
           </div>
 
-          {/* 우측 영역: 로그인 버튼 */}
-          <div className="flex items-center">
+          {/* 네비게이션 메뉴 */}
+          <nav className="flex items-center space-x-6">
+            <Link 
+              href="/ranking" 
+              className="text-slate-300 hover:text-blue-400 px-3 py-2 text-sm font-medium transition-colors"
+            >
+              랭킹
+            </Link>
             <AuthButton />
-          </div>
+          </nav>
         </div>
       </div>
     </header>
