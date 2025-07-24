@@ -179,7 +179,7 @@ export default function Home() {
             <div className="max-w-md mx-auto text-center mb-4">
               <div className="bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 rounded-lg p-3">
                 <p className="text-sm text-blue-800 dark:text-blue-200">
-                  <strong>오늘 남은 퀴즈 횟수:</strong> {remainingAttempts}/10
+                  <strong>오늘 남은 퀴즈 횟수:</strong> {remainingAttempts}/50
                 </p>
                 {remainingAttempts === 0 && (
                   <p className="text-xs text-red-600 dark:text-red-400 mt-1">
@@ -208,7 +208,7 @@ export default function Home() {
                 // 일일 퀴즈 시도 횟수 확인
                 const attemptData = await checkQuizAttempts();
                 if (attemptData && !attemptData.can_play) {
-                  alert(`오늘은 더 이상 퀴즈를 플레이할 수 없습니다.\n일일 최대 10번까지 가능합니다.\n오늘 시도 횟수: ${attemptData.attempts_today}/10`);
+                  alert(`오늘은 더 이상 퀴즈를 플레이할 수 없습니다.\n일일 최대 50번까지 가능합니다.\n오늘 시도 횟수: ${attemptData.attempts_today}/50`);
                   return;
                 }
                 

@@ -80,12 +80,47 @@ function QuizPageContent() {
       const data = await response.json();
       setSentences(data.sentences);
       setUserAnswers(new Array(data.sentences.length).fill(''));
+      
+      // 퀴즈 시작 시점에 기록 저장 (카운트 감소)
+      await recordQuizStart();
     } catch (err) {
       setError(err instanceof Error ? err.message : '알 수 없는 오류가 발생했습니다.');
     } finally {
       setIsLoading(false);
     }
   }, [difficulty, environment]);
+
+  const recordQuizStart = async () => {
+    if (!user) return;
+    
+    try {
+      const response = await fetch('/api/quiz-attempts', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          user_id: user.id,
+          difficulty,
+          environment,
+          score: 0, // 시작 시점이므로 0점
+          total_questions: 10
+        }),
+      });
+
+      if (response.ok) {
+        console.log('✅ Quiz start recorded - count decreased');
+      } else {
+        const errorData = await response.text();
+        console.error('❌ Failed to record quiz start:', {
+          status: response.status,
+          error: errorData
+        });
+      }
+    } catch (error) {
+      console.error('❌ Error recording quiz start:', error);
+    }
+  };
 
   useEffect(() => {
     if (difficulty && environment) {
@@ -249,31 +284,8 @@ function QuizPageContent() {
     });
 
     try {
-      // 1. quiz_attempts 테이블에 시도 기록 저장
-      const quizAttemptResponse = await fetch('/api/quiz-attempts', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          user_id: user.id,
-          difficulty,
-          environment,
-          score: correctCount,
-          total_questions: totalQuestions
-        }),
-      });
-
-      if (quizAttemptResponse.ok) {
-        console.log('✅ Quiz attempt saved successfully');
-      } else {
-        const errorData = await quizAttemptResponse.text();
-        console.error('❌ Failed to save quiz attempt:', {
-          status: quizAttemptResponse.status,
-          statusText: quizAttemptResponse.statusText,
-          error: errorData
-        });
-      }
+      // 퀴즈 완료 - 기록은 시작 시점에 이미 저장됨
+      console.log('✅ Quiz completed with score:', correctCount);
 
       // 2. 기존 user_progress 테이블 업데이트 (랭킹용)
       const { data: existingProgress, error: selectError } = await supabase

@@ -84,7 +84,7 @@ export async function GET(request: NextRequest) {
     }
 
     const attemptCount = data?.length || 0;
-    const maxAttempts = 10;
+    const maxAttempts = 50;
     const remainingAttempts = Math.max(0, maxAttempts - attemptCount);
 
     return NextResponse.json({
