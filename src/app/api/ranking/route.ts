@@ -6,16 +6,7 @@ interface UserProgress {
   user_id: string;
   difficulty: string;
   score: number;
-  rank: number;
-  users?: {
-    id: string;
-    email: string;
-    user_metadata?: {
-      name?: string;
-      full_name?: string;
-      avatar_url?: string;
-    };
-  };
+  rank?: number;
 }
 
 const supabase = createClient(
@@ -41,14 +32,7 @@ export async function GET(request: NextRequest) {
 
       const result = await supabase
         .from('user_progress')
-        .select(`
-          *,
-          users:user_id (
-            id,
-            email,
-            user_metadata
-          )
-        `)
+        .select('*')
         .eq('difficulty', difficulty)
         .order('score', { ascending: false })
         .limit(100);
@@ -98,14 +82,7 @@ export async function GET(request: NextRequest) {
       // 모든 난이도의 랭킹 조회
       const result = await supabase
         .from('user_progress')
-        .select(`
-          *,
-          users:user_id (
-            id,
-            email,
-            user_metadata
-          )
-        `)
+        .select('*')
         .order('score', { ascending: false });
       
       const data = result.data || [];
