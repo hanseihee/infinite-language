@@ -34,6 +34,8 @@ function QuizPageContent() {
   const [error, setError] = useState<string | null>(null);
   const [showResults, setShowResults] = useState(false);
   const [isPlayingTTS, setIsPlayingTTS] = useState(false);
+  const [rankingData, setRankingData] = useState<any>(null);
+  const [userRank, setUserRank] = useState<number | null>(null);
 
   const generateSentences = useCallback(async () => {
     setIsLoading(true);
@@ -245,11 +247,54 @@ function QuizPageContent() {
         if (data.message) {
           console.log('Server message:', data.message);
         }
+        
+        // 점수 저장 후 랭킹 정보 가져오기
+        await fetchRankingData();
       } else {
         console.error('❌ Failed to save progress:', data.error);
       }
     } catch (error) {
       console.error('❌ Network error saving progress:', error);
+    }
+  };
+
+  const fetchRankingData = async () => {
+    if (!user || !difficulty) return;
+
+    try {
+      const response = await fetch(`/api/ranking?difficulty=${difficulty}&user_id=${user.id}`);
+      const data = await response.json();
+      
+      if (data.success) {
+        setRankingData(data.data);
+        setUserRank(data.user_rank);
+      } else {
+        console.error('❌ Failed to fetch ranking:', data.error);
+      }
+    } catch (error) {
+      console.error('❌ Network error fetching ranking:', error);
+    }
+  };
+
+  const getUserDisplayName = (userProgress: any) => {
+    const userData = userProgress.users;
+    if (!userData) return '익명 사용자';
+    
+    const metadata = userData.user_metadata;
+    if (metadata?.name) return metadata.name;
+    if (metadata?.full_name) return metadata.full_name;
+    if (userData.email) {
+      return userData.email.split('@')[0];
+    }
+    return '익명 사용자';
+  };
+
+  const getRankIcon = (rank: number) => {
+    switch (rank) {
+      case 1: return '🥇';
+      case 2: return '🥈';
+      case 3: return '🥉';
+      default: return `${rank}위`;
     }
   };
 
@@ -355,9 +400,18 @@ function QuizPageContent() {
               <div className="text-2xl sm:text-3xl lg:text-4xl font-bold mb-2">
                 {correctCount} / {sentences.length}
               </div>
-              <p className="text-base sm:text-lg text-gray-600 dark:text-gray-400">
+              <p className="text-base sm:text-lg text-gray-600 dark:text-gray-400 mb-4">
                 정답률: {Math.round((correctCount / sentences.length) * 100)}%
               </p>
+              
+              {/* 현재 사용자 순위 표시 */}
+              {userRank && (
+                <div className="bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 rounded-lg p-4 mb-6">
+                  <p className="text-sm sm:text-base text-blue-800 dark:text-blue-200">
+                    <strong>🏆 {difficulty} 난이도 순위:</strong> {getRankIcon(userRank)}
+                  </p>
+                </div>
+              )}
             </div>
 
             <div className="space-y-4 sm:space-y-6">
@@ -379,13 +433,73 @@ function QuizPageContent() {
               ))}
             </div>
 
+            {/* 상위 랭킹 표시 */}
+            {rankingData && rankingData.length > 0 && (
+              <div className="mt-8 sm:mt-10">
+                <h2 className="text-lg sm:text-xl font-bold text-center mb-4 sm:mb-6">
+                  🏆 {difficulty} 난이도 상위 랭킹
+                </h2>
+                <div className="bg-gray-50 dark:bg-gray-700 rounded-lg p-4 sm:p-6">
+                  <div className="space-y-3">
+                    {rankingData.slice(0, 5).map((userProgress: any) => (
+                      <div 
+                        key={userProgress.id}
+                        className={`flex items-center justify-between p-3 rounded-lg ${
+                          user && userProgress.user_id === user.id 
+                            ? 'bg-blue-100 dark:bg-blue-900/30 border border-blue-300 dark:border-blue-700' 
+                            : 'bg-white dark:bg-gray-600'
+                        }`}
+                      >
+                        <div className="flex items-center space-x-3">
+                          <div className="text-lg font-bold min-w-[50px]">
+                            {getRankIcon(userProgress.rank)}
+                          </div>
+                          <div>
+                            <p className="font-semibold text-sm sm:text-base">
+                              {getUserDisplayName(userProgress)}
+                              {user && userProgress.user_id === user.id && (
+                                <span className="ml-2 text-xs bg-blue-500 text-white px-2 py-1 rounded-full">
+                                  나
+                                </span>
+                              )}
+                            </p>
+                          </div>
+                        </div>
+                        <div className="text-right">
+                          <p className="text-lg font-bold text-blue-600 dark:text-blue-400">
+                            {userProgress.score}점
+                          </p>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                  <div className="text-center mt-4">
+                    <button
+                      onClick={() => window.location.href = '/ranking'}
+                      className="text-blue-600 dark:text-blue-400 hover:text-blue-800 dark:hover:text-blue-300 text-sm underline"
+                    >
+                      전체 랭킹 보기
+                    </button>
+                  </div>
+                </div>
+              </div>
+            )}
+
             <div className="text-center mt-6 sm:mt-8">
-              <button
-                onClick={() => window.location.href = '/'}
-                className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 sm:py-3 px-4 sm:px-6 rounded-lg text-sm sm:text-base"
-              >
-                홈으로 돌아가기
-              </button>
+              <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 justify-center">
+                <button
+                  onClick={() => window.location.href = '/'}
+                  className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 sm:py-3 px-4 sm:px-6 rounded-lg text-sm sm:text-base"
+                >
+                  홈으로 돌아가기
+                </button>
+                <button
+                  onClick={() => window.location.href = '/ranking'}
+                  className="bg-green-500 hover:bg-green-700 text-white font-bold py-2 sm:py-3 px-4 sm:px-6 rounded-lg text-sm sm:text-base"
+                >
+                  전체 랭킹 보기
+                </button>
+              </div>
             </div>
           </div>
         </div>
