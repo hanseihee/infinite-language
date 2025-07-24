@@ -1,93 +1,20 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import Header from '@/components/Header';
 import { useAuth } from '@/contexts/AuthContext';
+import { useRankingData } from '@/hooks/useRankingData';
+import { useUserDisplay } from '@/hooks/useUserDisplay';
 
-interface UserProgress {
-  id: string;
-  user_id: string;
-  difficulty: string;
-  score: number;
-  rank: number;
-  users?: {
-    id: string;
-    email: string;
-    user_metadata?: {
-      name?: string;
-      full_name?: string;
-      avatar_url?: string;
-    };
-  };
-}
 
-interface RankingData {
-  [difficulty: string]: UserProgress[];
-}
 
 export default function RankingPage() {
   const { user, loading } = useAuth();
-  const [rankingData, setRankingData] = useState<RankingData>({});
-  const [userRanks, setUserRanks] = useState<{[key: string]: number}>({});
+  const { rankingData, userRanks, isLoading, error, refetchRankingData } = useRankingData(user);
+  const { getUserDisplayName, getRankIcon } = useUserDisplay(user);
   const [selectedDifficulty, setSelectedDifficulty] = useState<string>('쉬움');
-  const [isLoading, setIsLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
 
   const difficulties = ['쉬움', '중간', '어려움'];
-
-  useEffect(() => {
-    fetchRankingData();
-  }, [user]); // eslint-disable-line react-hooks/exhaustive-deps
-
-  const fetchRankingData = async () => {
-    setIsLoading(true);
-    setError(null);
-
-    try {
-      const url = user 
-        ? `/api/ranking?user_id=${user.id}`
-        : '/api/ranking';
-      
-      const response = await fetch(url);
-      const data = await response.json();
-
-      if (data.success) {
-        setRankingData(data.data);
-        if (data.user_ranks) {
-          setUserRanks(data.user_ranks);
-        }
-      } else {
-        setError(data.error || '랭킹 데이터를 가져오는데 실패했습니다.');
-      }
-    } catch (error) {
-      console.error('Error fetching ranking:', error);
-      setError('서버 오류가 발생했습니다.');
-    } finally {
-      setIsLoading(false);
-    }
-  };
-
-  const getUserDisplayName = (userProgress: UserProgress) => {
-    const userData = userProgress.users;
-    if (!userData) return '익명 사용자';
-    
-    const metadata = userData.user_metadata;
-    if (metadata?.name) return metadata.name;
-    if (metadata?.full_name) return metadata.full_name;
-    if (userData.email) {
-      return userData.email.split('@')[0];
-    }
-    return '익명 사용자';
-  };
-
-  const getRankIcon = (rank: number) => {
-    switch (rank) {
-      case 1: return '🥇';
-      case 2: return '🥈';
-      case 3: return '🥉';
-      default: return `${rank}위`;
-    }
-  };
 
   if (loading || isLoading) {
     return (
@@ -111,7 +38,7 @@ export default function RankingPage() {
           <div className="text-center">
             <p className="text-red-500 text-lg mb-4">{error}</p>
             <button
-              onClick={fetchRankingData}
+              onClick={refetchRankingData}
               className="bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-lg"
             >
               다시 시도

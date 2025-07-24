@@ -1,21 +1,41 @@
 'use client';
 
 import { useAuth } from '@/contexts/AuthContext';
+import { useAuthActions } from '@/hooks/useAuthActions';
 import Image from 'next/image';
 
-export default function AuthButton() {
-  const { user, loading, signInWithGoogle, signOut } = useAuth();
+interface AuthButtonProps {
+  mobile?: boolean;
+  onAction?: () => void;
+}
+
+export default function AuthButton({ mobile = false, onAction }: AuthButtonProps) {
+  const { user, loading } = useAuth();
+  const { handleSignIn, handleSignOut } = useAuthActions({ onAction });
 
   if (loading) {
     return (
       <div className="flex items-center space-x-2">
         <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-blue-500"></div>
-        <span className="text-sm text-gray-600 dark:text-gray-400">로딩 중...</span>
+        <span className="text-sm text-slate-400">로딩 중...</span>
       </div>
     );
   }
 
   if (user) {
+    if (mobile) {
+      // 모바일에서는 로그아웃 버튼만 표시 (사용자 정보는 햄버거 메뉴에서 별도 표시)
+      return (
+        <button
+          onClick={handleSignOut}
+          className="w-full text-left px-3 py-2 text-sm bg-red-500 hover:bg-red-600 text-white rounded-md transition-colors"
+        >
+          로그아웃
+        </button>
+      );
+    }
+
+    // 데스크톱 버전
     return (
       <div className="flex items-center space-x-3">
         <div className="flex items-center space-x-2">
@@ -28,12 +48,12 @@ export default function AuthButton() {
               className="rounded-full"
             />
           )}
-          <span className="hidden md:block text-sm font-medium text-gray-700 dark:text-gray-300">
-            {user.user_metadata?.full_name || user.email}
+          <span className="hidden md:block text-sm font-medium text-slate-200">
+            {user.user_metadata?.name || user.user_metadata?.full_name || user.email?.split('@')[0]}
           </span>
         </div>
         <button
-          onClick={signOut}
+          onClick={handleSignOut}
           className="px-3 py-1 text-sm bg-red-500 hover:bg-red-600 text-white rounded-md transition-colors"
         >
           로그아웃
@@ -42,10 +62,15 @@ export default function AuthButton() {
     );
   }
 
+  // 로그인 버튼
+  const buttonClass = mobile
+    ? "w-full flex justify-center items-center space-x-2 px-4 py-2 bg-slate-700 hover:bg-slate-600 border border-slate-600 rounded-lg transition-colors text-slate-200"
+    : "flex items-center space-x-2 px-4 py-2 bg-slate-700 hover:bg-slate-600 border border-slate-600 rounded-lg shadow-sm transition-colors text-slate-200";
+
   return (
     <button
-      onClick={signInWithGoogle}
-      className="flex items-center space-x-2 px-4 py-2 bg-white hover:bg-gray-50 border border-gray-300 rounded-lg shadow-sm transition-colors dark:bg-gray-800 dark:hover:bg-gray-700 dark:border-gray-600"
+      onClick={handleSignIn}
+      className={buttonClass}
     >
       <svg
         width="20"
@@ -70,7 +95,7 @@ export default function AuthButton() {
           d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"
         />
       </svg>
-      <span className="text-sm font-medium text-gray-700 dark:text-gray-300">
+      <span className="text-sm font-medium">
         Google로 로그인
       </span>
     </button>

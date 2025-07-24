@@ -34,7 +34,8 @@
       "mcp__supabase__list_migrations",
       "Bash(curl:*)",
       "mcp__supabase__search_docs",
-      "Bash(taskkill:*)"
+      "Bash(taskkill:*)",
+      "Bash(pkill:*)"
     ],
     "deny": []
   },

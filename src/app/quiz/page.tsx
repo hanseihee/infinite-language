@@ -4,6 +4,7 @@ import { useState, useEffect, useCallback, Suspense } from 'react';
 import { useSearchParams } from 'next/navigation';
 import WordSelector from '@/components/WordSelector';
 import { useAuth } from '@/contexts/AuthContext';
+import { useUserDisplay } from '@/hooks/useUserDisplay';
 import { supabase } from '@/lib/supabase';
 
 interface Sentence {
@@ -25,12 +26,12 @@ interface UserProgress {
   difficulty: string;
   score: number;
   rank: number;
-  users?: {
-    id: string;
+  user_info?: {
     email: string;
-    user_metadata?: {
+    raw_user_meta_data: {
       name?: string;
       full_name?: string;
+      email?: string;
       avatar_url?: string;
     };
   };
@@ -38,6 +39,7 @@ interface UserProgress {
 
 function QuizPageContent() {
   const { user, loading } = useAuth();
+  const { getUserDisplayName, getRankIcon } = useUserDisplay(user);
   const searchParams = useSearchParams();
   const difficulty = searchParams.get('difficulty');
   const environment = searchParams.get('environment');
@@ -333,27 +335,6 @@ function QuizPageContent() {
     }
   };
 
-  const getUserDisplayName = (userProgress: UserProgress) => {
-    const userData = userProgress.users;
-    if (!userData) return '익명 사용자';
-    
-    const metadata = userData.user_metadata;
-    if (metadata?.name) return metadata.name;
-    if (metadata?.full_name) return metadata.full_name;
-    if (userData.email) {
-      return userData.email.split('@')[0];
-    }
-    return '익명 사용자';
-  };
-
-  const getRankIcon = (rank: number) => {
-    switch (rank) {
-      case 1: return '🥇';
-      case 2: return '🥈';
-      case 3: return '🥉';
-      default: return `${rank}위`;
-    }
-  };
 
   const goToNextSentence = () => {
     if (!showFeedback) {

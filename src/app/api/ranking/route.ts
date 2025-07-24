@@ -7,6 +7,15 @@ interface UserProgress {
   difficulty: string;
   score: number;
   rank?: number;
+  user_info?: {
+    email: string;
+    raw_user_meta_data: {
+      name?: string;
+      full_name?: string;
+      email?: string;
+      avatar_url?: string;
+    };
+  };
 }
 
 const supabase = createClient(
@@ -30,15 +39,13 @@ export async function GET(request: NextRequest) {
         );
       }
 
-      const result = await supabase
+      // 기본 user_progress 데이터만 가져오기 (auth.users 접근 불가)
+      const { data, error } = await supabase
         .from('user_progress')
         .select('*')
         .eq('difficulty', difficulty)
         .order('score', { ascending: false })
         .limit(100);
-      
-      const data = result.data || [];
-      const error = result.error;
       
       // 테이블이 존재하지 않는 경우 처리
       if (error && (error.message?.includes('relation') || error.code === 'PGRST116')) {
@@ -79,7 +86,7 @@ export async function GET(request: NextRequest) {
         difficulty
       });
     } else {
-      // 모든 난이도의 랭킹 조회
+      // 모든 난이도의 랭킹 조회 (기본 데이터만)
       const result = await supabase
         .from('user_progress')
         .select('*')
