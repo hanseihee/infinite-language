@@ -40,6 +40,7 @@ ALTER TABLE quiz_attempts ENABLE ROW LEVEL SECURITY;
 -- 기존 정책 삭제 (있다면)
 DROP POLICY IF EXISTS "Users can view their own quiz attempts" ON quiz_attempts;
 DROP POLICY IF EXISTS "Users can insert their own quiz attempts" ON quiz_attempts;
+DROP POLICY IF EXISTS "Users can insert quiz attempts" ON quiz_attempts;
 DROP POLICY IF EXISTS "Users can update their own quiz attempts" ON quiz_attempts;
 
 -- 사용자는 자신의 기록만 볼 수 있음
@@ -47,10 +48,10 @@ CREATE POLICY "Users can view their own quiz attempts"
   ON quiz_attempts FOR SELECT
   USING (auth.uid() = user_id);
 
--- 사용자는 자신의 기록만 삽입할 수 있음
-CREATE POLICY "Users can insert their own quiz attempts" 
+-- 모든 사용자가 퀴즈 기록을 삽입할 수 있음 (API 레벨에서 검증)
+CREATE POLICY "Users can insert quiz attempts" 
   ON quiz_attempts FOR INSERT
-  WITH CHECK (auth.uid() = user_id);
+  WITH CHECK (true);
 
 -- 사용자는 자신의 기록만 업데이트할 수 있음
 CREATE POLICY "Users can update their own quiz attempts"

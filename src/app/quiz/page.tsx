@@ -267,7 +267,12 @@ function QuizPageContent() {
       if (quizAttemptResponse.ok) {
         console.log('✅ Quiz attempt saved successfully');
       } else {
-        console.warn('⚠️ Failed to save quiz attempt, continuing with user_progress update');
+        const errorData = await quizAttemptResponse.text();
+        console.error('❌ Failed to save quiz attempt:', {
+          status: quizAttemptResponse.status,
+          statusText: quizAttemptResponse.statusText,
+          error: errorData
+        });
       }
 
       // 2. 기존 user_progress 테이블 업데이트 (랭킹용)

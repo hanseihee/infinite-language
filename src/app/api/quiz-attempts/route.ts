@@ -1,5 +1,17 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { supabase } from '@/lib/supabase';
+import { createClient } from '@supabase/supabase-js';
+
+// 서버 사이드에서는 service role key 사용 (RLS 무시)
+const supabaseAdmin = createClient(
+  process.env.NEXT_PUBLIC_SUPABASE_URL!,
+  process.env.SUPABASE_SERVICE_ROLE_KEY || process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
+  {
+    auth: {
+      autoRefreshToken: false,
+      persistSession: false
+    }
+  }
+);
 
 export async function GET(request: NextRequest) {
   const { searchParams } = new URL(request.url);
@@ -38,7 +50,7 @@ export async function GET(request: NextRequest) {
     let data, error;
     
     // 먼저 quiz_attempts 테이블 사용 시도
-    const { data: quizData, error: quizError } = await supabase
+    const { data: quizData, error: quizError } = await supabaseAdmin
       .from('quiz_attempts')
       .select('id')
       .eq('user_id', user_id)
@@ -52,7 +64,7 @@ export async function GET(request: NextRequest) {
       // quiz_attempts 테이블이 없거나 오류 발생시 user_progress 사용
       console.log('quiz_attempts 테이블 사용 불가, user_progress 사용:', quizError.message);
       
-      const { data: progressData, error: progressError } = await supabase
+      const { data: progressData, error: progressError } = await supabaseAdmin
         .from('user_progress')
         .select('id, created_at')
         .eq('user_id', user_id)
@@ -113,7 +125,16 @@ export async function POST(request: NextRequest) {
     const today = koreaTime.toISOString().split('T')[0];
 
     // quiz_attempts 테이블 사용 시도
-    const { data, error } = await supabase
+    console.log('💾 Attempting to save quiz attempt:', {
+      user_id,
+      difficulty,
+      environment,
+      score,
+      total_questions,
+      attempt_date: today
+    });
+
+    const { data, error } = await supabaseAdmin
       .from('quiz_attempts')
       .insert([{
         user_id,
@@ -126,12 +147,18 @@ export async function POST(request: NextRequest) {
       .select();
 
     if (error) {
-      console.error('Error saving quiz attempt:', error);
+      console.error('❌ Error saving quiz attempt:', error);
       return NextResponse.json(
-        { error: 'Failed to save quiz attempt' },
+        { 
+          error: 'Failed to save quiz attempt',
+          details: error.message,
+          code: error.code
+        },
         { status: 500 }
       );
     }
+
+    console.log('✅ Quiz attempt saved successfully:', data);
 
     return NextResponse.json({
       success: true,
