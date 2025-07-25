@@ -6,6 +6,7 @@ import WordSelector from '@/components/WordSelector';
 import { useAuth } from '@/contexts/AuthContext';
 import { useUserDisplay } from '@/hooks/useUserDisplay';
 import { supabase } from '@/lib/supabase';
+import Header from '@/components/Header';
 
 interface Sentence {
   id: number;
@@ -411,56 +412,68 @@ function QuizPageContent() {
   // 로그인 체크
   if (loading) {
     return (
-      <div className="min-h-screen flex items-center justify-center">
-        <div className="text-center">
-          <p className="text-2xl gradient-loading font-bold">로딩 중...</p>
+      <>
+        <Header />
+        <div className="min-h-screen flex items-center justify-center">
+          <div className="text-center">
+            <p className="text-2xl gradient-loading font-bold">로딩 중...</p>
+          </div>
         </div>
-      </div>
+      </>
     );
   }
 
   if (!user) {
     return (
-      <div className="min-h-screen flex items-center justify-center">
-        <div className="text-center">
-          <h1 className="text-2xl font-bold mb-4">로그인이 필요합니다</h1>
-          <p className="text-gray-600 dark:text-gray-400 mb-6">
-            퀴즈를 이용하려면 먼저 로그인해주세요.
-          </p>
-          <button
-            onClick={() => window.location.href = '/'}
-            className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
-          >
-            홈으로 돌아가기
-          </button>
+      <>
+        <Header />
+        <div className="min-h-screen flex items-center justify-center">
+          <div className="text-center">
+            <h1 className="text-2xl font-bold mb-4">로그인이 필요합니다</h1>
+            <p className="text-gray-600 dark:text-gray-400 mb-6">
+              퀴즈를 이용하려면 먼저 로그인해주세요.
+            </p>
+            <button
+              onClick={() => window.location.href = '/'}
+              className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
+            >
+              홈으로 돌아가기
+            </button>
+          </div>
         </div>
-      </div>
+      </>
     );
   }
 
   if (isLoading) {
     return (
-      <div className="min-h-screen flex items-center justify-center">
-        <div className="text-center">
-          <p className="text-2xl gradient-loading font-bold">문장을 생성하고 있습니다...</p>
+      <>
+        <Header />
+        <div className="min-h-screen flex items-center justify-center">
+          <div className="text-center">
+            <p className="text-2xl gradient-loading font-bold">문장을 생성하고 있습니다...</p>
+          </div>
         </div>
-      </div>
+      </>
     );
   }
 
   if (error) {
     return (
-      <div className="min-h-screen flex items-center justify-center">
-        <div className="text-center">
-          <p className="text-red-500 text-lg mb-4">{error}</p>
-          <button
-            onClick={() => window.history.back()}
-            className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
-          >
-            돌아가기
-          </button>
+      <>
+        <Header />
+        <div className="min-h-screen flex items-center justify-center">
+          <div className="text-center">
+            <p className="text-red-500 text-lg mb-4">{error}</p>
+            <button
+              onClick={() => window.history.back()}
+              className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
+            >
+              돌아가기
+            </button>
+          </div>
         </div>
-      </div>
+      </>
     );
   }
 
@@ -468,7 +481,9 @@ function QuizPageContent() {
     const correctCount = answerResults.filter(result => result.isCorrect).length;
     
     return (
-      <div className="min-h-screen bg-gray-50 dark:bg-gray-900 py-4 sm:py-8">
+      <>
+        <Header />
+        <div className="min-h-screen bg-gray-50 dark:bg-gray-900 py-4 sm:py-8">
         <div className="max-w-4xl mx-auto px-4">
           <div className="bg-white dark:bg-gray-800 rounded-lg shadow-lg p-4 sm:p-6 lg:p-8">
             <h1 className="text-xl sm:text-2xl lg:text-3xl font-bold text-center mb-6 sm:mb-8">퀴즈 결과</h1>
@@ -581,13 +596,16 @@ function QuizPageContent() {
           </div>
         </div>
       </div>
+      </>
     );
   }
 
   const currentSentence = sentences[currentSentenceIndex];
 
   return (
-    <div className="min-h-screen bg-gray-50 dark:bg-gray-900 py-4 sm:py-8">
+    <>
+      <Header />
+      <div className="min-h-screen bg-gray-50 dark:bg-gray-900 py-4 sm:py-8">
       <div className="max-w-4xl mx-auto px-4">
         <div className="bg-white dark:bg-gray-800 rounded-lg shadow-lg p-4 sm:p-6 lg:p-8">
           <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-4 sm:mb-6 space-y-2 sm:space-y-0">
@@ -707,6 +725,7 @@ function QuizPageContent() {
         </div>
       </div>
     </div>
+    </>
   );
 }
 
