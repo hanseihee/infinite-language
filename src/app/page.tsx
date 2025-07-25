@@ -197,7 +197,7 @@ export default function HomePage() {
             
             <button
               onClick={user ? startQuiz : signInWithGoogle}
-              disabled={user && remainingAttempts === 0}
+              disabled={!!(user && remainingAttempts === 0)}
               className={`w-full py-3 sm:py-4 px-4 rounded-lg font-bold text-base sm:text-lg transition-all duration-200 
                 ${user && remainingAttempts === 0
                   ? 'bg-gray-600 text-gray-400 cursor-not-allowed' 
