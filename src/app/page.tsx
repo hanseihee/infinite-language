@@ -45,7 +45,7 @@ export default function Home() {
     if (user) {
       checkQuizAttempts();
     }
-  }, [user]);
+  }, [user, checkQuizAttempts]);
 
   // URL 파라미터에서 로그인 결과 확인
   useEffect(() => {

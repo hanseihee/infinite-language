@@ -89,7 +89,7 @@ function QuizPageContent() {
     } finally {
       setIsLoading(false);
     }
-  }, [difficulty, environment]);
+  }, [difficulty, environment, recordQuizStart]);
 
   const recordQuizStart = async () => {
     if (!user) return;

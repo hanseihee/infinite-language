@@ -7,7 +7,7 @@ export default function TermsPage() {
         <section className="mb-8">
           <h2 className="text-xl font-semibold mb-4">제1조 (목적)</h2>
           <p className="mb-4">
-            이 약관은 Infinite Language(이하 "서비스")가 제공하는 언어 학습 서비스의 이용과 관련하여 
+            이 약관은 Infinite Language(이하 &quot;서비스&quot;)가 제공하는 언어 학습 서비스의 이용과 관련하여 
             서비스와 이용자의 권리, 의무 및 책임사항을 규정함을 목적으로 합니다.
           </p>
         </section>
@@ -15,9 +15,9 @@ export default function TermsPage() {
         <section className="mb-8">
           <h2 className="text-xl font-semibold mb-4">제2조 (용어의 정의)</h2>
           <ul className="list-disc pl-6 space-y-2">
-            <li>"서비스"란 Infinite Language가 제공하는 모든 언어 학습 관련 서비스를 의미합니다.</li>
-            <li>"이용자"란 이 약관에 따라 서비스를 이용하는 모든 사용자를 의미합니다.</li>
-            <li>"계정"이란 서비스 이용을 위해 이용자가 설정한 이메일 주소와 관련 정보를 의미합니다.</li>
+            <li>&quot;서비스&quot;란 Infinite Language가 제공하는 모든 언어 학습 관련 서비스를 의미합니다.</li>
+            <li>&quot;이용자&quot;란 이 약관에 따라 서비스를 이용하는 모든 사용자를 의미합니다.</li>
+            <li>&quot;계정&quot;이란 서비스 이용을 위해 이용자가 설정한 이메일 주소와 관련 정보를 의미합니다.</li>
           </ul>
         </section>
 
