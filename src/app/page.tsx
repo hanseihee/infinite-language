@@ -118,28 +118,7 @@ export default function HomePage() {
             <span className="sr-only"> - AI 언어 학습 플랫폼</span>
           </h1>
           
-          {/* 디버깅용 상태 표시 */}
-          {user && (
-            <div className="mb-4 p-3 bg-gray-800 border border-gray-600 rounded-lg text-xs text-gray-300">
-              <p>로그인 상태: ✅ | remainingAttempts: {remainingAttempts === null ? 'null' : remainingAttempts}</p>
-            </div>
-          )}
 
-          {user && remainingAttempts !== null && remainingAttempts > 0 && (
-            <div className="mb-6 p-4 bg-blue-900/50 border border-blue-700 rounded-lg">
-              <p className="text-sm text-blue-200 text-center">
-                오늘 남은 퀴즈 횟수: <span className="font-bold text-white">{remainingAttempts}회</span>
-              </p>
-            </div>
-          )}
-
-          {user && remainingAttempts === 0 && (
-            <div className="mb-6 p-4 bg-red-900/50 border border-red-700 rounded-lg">
-              <p className="text-sm text-red-200 text-center">
-                오늘의 퀴즈 횟수를 모두 사용했습니다. 내일 다시 도전해주세요!
-              </p>
-            </div>
-          )}
           
           <div className="space-y-6">
             <div>
@@ -206,6 +185,21 @@ export default function HomePage() {
             >
               {!user ? '로그인' : (remainingAttempts === 0 ? '오늘 횟수 초과' : '퀴즈 시작')}
             </button>
+            
+            {/* 남은 퀴즈 횟수 표시 */}
+            {user && remainingAttempts !== null && (
+              <div className="mt-3 text-center">
+                {remainingAttempts > 0 ? (
+                  <p className="text-xs text-gray-400">
+                    오늘 남은 퀴즈 횟수: <span className="text-white">{remainingAttempts}회</span>
+                  </p>
+                ) : (
+                  <p className="text-xs text-red-400">
+                    오늘의 퀴즈 횟수를 모두 사용했습니다.
+                  </p>
+                )}
+              </div>
+            )}
           </div>
         </div>
       </main>
