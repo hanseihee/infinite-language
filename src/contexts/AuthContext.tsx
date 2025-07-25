@@ -63,8 +63,11 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       console.log('Is specific domain:', currentOrigin.includes('infinite-language-one.vercel.app'));
       
       // 배포 환경 감지
-      if (currentOrigin.includes('vercel.app') || currentOrigin.includes('infinite-language-one.vercel.app')) {
-        console.log('Using production redirect URL');
+      if (currentOrigin.includes('lingbrew.com')) {
+        console.log('Using lingbrew.com redirect URL');
+        return 'https://lingbrew.com/auth/callback';
+      } else if (currentOrigin.includes('vercel.app') || currentOrigin.includes('infinite-language-one.vercel.app')) {
+        console.log('Using Vercel redirect URL');
         return 'https://infinite-language-one.vercel.app/auth/callback';
       }
       

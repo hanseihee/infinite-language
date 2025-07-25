@@ -10,6 +10,11 @@ export async function GET(request: NextRequest) {
   const getBaseUrl = () => {
     const host = requestUrl.host;
     
+    // lingbrew.com 도메인
+    if (host.includes('lingbrew.com')) {
+      return 'https://lingbrew.com';
+    }
+    
     // Vercel 배포 환경
     if (host.includes('vercel.app') || host.includes('infinite-language-one.vercel.app')) {
       return 'https://infinite-language-one.vercel.app';

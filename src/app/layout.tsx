@@ -26,11 +26,11 @@ export const metadata: Metadata = {
     address: false,
     telephone: false,
   },
-  metadataBase: new URL('https://infinite-language-one.vercel.app'),
+  metadataBase: new URL('https://lingbrew.com'),
   openGraph: {
     title: "Infinite Language - 무한 영어 학습",
     description: "AI 기반 영어 학습 플랫폼으로 매일 새로운 영어 문장을 만들며 실력을 향상시키세요.",
-    url: 'https://infinite-language-one.vercel.app',
+    url: 'https://lingbrew.com',
     siteName: 'Infinite Language',
     images: [
       {
@@ -61,7 +61,7 @@ export const metadata: Metadata = {
     },
   },
   alternates: {
-    canonical: 'https://infinite-language-one.vercel.app',
+    canonical: 'https://lingbrew.com',
   },
 };
 
@@ -76,7 +76,7 @@ export default function RootLayout({
     name: 'Infinite Language',
     applicationCategory: 'EducationalApplication',
     description: 'AI 기반 영어 학습 플랫폼으로 매일 새로운 영어 문장을 만들며 실력을 향상시키세요.',
-    url: 'https://infinite-language-one.vercel.app',
+    url: 'https://lingbrew.com',
     inLanguage: ['ko', 'en'],
     offers: {
       '@type': 'Offer',
