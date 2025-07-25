@@ -8,20 +8,28 @@ import { useAuth } from '@/contexts/AuthContext';
 export default function HomePage() {
   const [selectedDifficulty, setSelectedDifficulty] = useState<string | null>(null);
   const [selectedEnvironment, setSelectedEnvironment] = useState<string | null>(null);
+  const [customEnvironment, setCustomEnvironment] = useState<string>('');
   const [remainingAttempts, setRemainingAttempts] = useState<number | null>(null);
   const { user } = useAuth();
 
   const difficulties = ['쉬움', '중간', '어려움'];
   const environments = ['일상', '회사', '쇼핑', '여행', '레스토랑', '병원', '학교', '공항'];
 
+  // 최종 환경 선택: 사용자 입력이 있으면 우선, 없으면 드롭다운 선택
   const getFinalEnvironment = () => {
+    if (customEnvironment.trim()) {
+      return customEnvironment.trim();
+    }
+    if (selectedEnvironment) {
+      return selectedEnvironment;
+    }
     if (typeof window !== 'undefined') {
       const savedEnvironment = localStorage.getItem('lastEnvironment');
       if (savedEnvironment && environments.includes(savedEnvironment)) {
         return savedEnvironment;
       }
     }
-    return environments[0];
+    return '';
   };
 
   // 사용자의 일일 퀴즈 시도 횟수 확인
@@ -65,16 +73,19 @@ export default function HomePage() {
       return;
     }
 
-    if (!selectedEnvironment) {
-      alert('환경을 선택해주세요.');
+    const finalEnvironment = getFinalEnvironment();
+    if (!finalEnvironment) {
+      alert('환경을 선택하거나 입력해주세요.');
       return;
     }
 
     // 선택한 환경을 localStorage에 저장
-    localStorage.setItem('lastEnvironment', selectedEnvironment);
+    if (!customEnvironment.trim() && selectedEnvironment) {
+      localStorage.setItem('lastEnvironment', selectedEnvironment);
+    }
 
     // 퀴즈 페이지로 이동
-    window.location.href = `/quiz?difficulty=${selectedDifficulty}&environment=${selectedEnvironment}`;
+    window.location.href = `/quiz?difficulty=${selectedDifficulty}&environment=${encodeURIComponent(finalEnvironment)}`;
   };
 
   return (
@@ -122,9 +133,39 @@ export default function HomePage() {
               <Dropdown 
                 options={environments} 
                 placeholder="환경을 선택하세요"
-                onSelect={setSelectedEnvironment}
-                defaultValue={getFinalEnvironment()}
+                onSelect={(environment) => {
+                  setSelectedEnvironment(environment);
+                  // 드롭다운에서 선택할 때 사용자 입력 초기화
+                  setCustomEnvironment('');
+                }}
+                selectedOption={selectedEnvironment || undefined}
               />
+              
+              {/* 사용자 직접 입력 필드 */}
+              <div className="mt-3">
+                <label className="block text-sm sm:text-base font-medium text-gray-400 mb-2">
+                  또는 직접 입력하세요
+                </label>
+                <input
+                  type="text"
+                  value={customEnvironment}
+                  onChange={(e) => {
+                    setCustomEnvironment(e.target.value);
+                    // 사용자가 직접 입력할 때 드롭다운 선택 해제
+                    if (e.target.value.trim()) {
+                      setSelectedEnvironment(null);
+                    }
+                  }}
+                  placeholder="예: 카페, 도서관, 호텔 등"
+                  className="w-full px-3 py-2 text-sm sm:text-base text-white bg-gray-800 border border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent placeholder-gray-500"
+                  style={{backgroundColor: '#252B36'}}
+                />
+                {customEnvironment.trim() && (
+                  <span className="mt-2 inline-block text-xs bg-green-600/20 text-green-400 px-2 py-1 rounded">
+                    직접입력: {customEnvironment}
+                  </span>
+                )}
+              </div>
             </div>
             
             <button
