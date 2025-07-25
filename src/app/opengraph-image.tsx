@@ -2,7 +2,7 @@ import { ImageResponse } from 'next/og'
 
 export const runtime = 'edge'
 
-export const alt = 'Infinite Language - 무한 영어 학습'
+export const alt = 'lingbrew - AI 언어 학습'
 export const size = {
   width: 1200,
   height: 630,
@@ -46,7 +46,7 @@ export default async function Image() {
               margin: 0,
             }}
           >
-            Infinite Language
+            lingbrew
           </h1>
           <p
             style={{

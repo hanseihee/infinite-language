@@ -6,7 +6,7 @@ export default function PrivacyPage() {
       <div className="prose prose-gray dark:prose-invert max-w-none">
         <section className="mb-8">
           <p className="mb-4">
-            Infinite Language(이하 &quot;서비스&quot;)는 이용자의 개인정보를 중요시하며, 
+            lingbrew(이하 &quot;서비스&quot;)는 이용자의 개인정보를 중요시하며, 
             「개인정보 보호법」을 준수하고 있습니다. 본 개인정보처리방침은 이용자가 제공한 개인정보가 
             어떠한 용도와 방식으로 이용되고 있으며, 개인정보보호를 위해 어떠한 조치가 취해지고 있는지 알려드립니다.
           </p>
@@ -113,7 +113,7 @@ export default function PrivacyPage() {
             이용자의 불만처리 및 피해구제 등을 위하여 아래와 같이 개인정보 보호책임자를 지정하고 있습니다:
           </p>
           <ul className="list-disc pl-6 space-y-2">
-            <li>개인정보 보호책임자: Infinite Language 운영팀</li>
+            <li>개인정보 보호책임자: lingbrew 운영팀</li>
             <li>연락처: [이메일 주소]</li>
           </ul>
         </section>

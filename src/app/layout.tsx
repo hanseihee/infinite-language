@@ -15,12 +15,12 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Infinite Language - 무한 영어 학습 | 영어 문장 만들기 연습",
+  title: "lingbrew - AI 언어 학습 | 영어 문장 만들기 연습",
   description: "AI 기반 영어 학습 플랫폼으로 매일 새로운 영어 문장을 만들며 실력을 향상시키세요. 난이도별 학습, 실시간 발음 지원, 랭킹 시스템까지!",
   keywords: "영어학습, 영어문장만들기, 영어공부, 온라인영어, 영어퀴즈, 영어게임, 무료영어학습, AI영어학습, 영어문법, 영어회화",
-  authors: [{ name: "Infinite Language Team" }],
-  creator: "Infinite Language",
-  publisher: "Infinite Language",
+  authors: [{ name: "lingbrew Team" }],
+  creator: "lingbrew",
+  publisher: "lingbrew",
   formatDetection: {
     email: false,
     address: false,
@@ -28,16 +28,16 @@ export const metadata: Metadata = {
   },
   metadataBase: new URL('https://lingbrew.com'),
   openGraph: {
-    title: "Infinite Language - 무한 영어 학습",
+    title: "lingbrew - AI 언어 학습",
     description: "AI 기반 영어 학습 플랫폼으로 매일 새로운 영어 문장을 만들며 실력을 향상시키세요.",
     url: 'https://lingbrew.com',
-    siteName: 'Infinite Language',
+    siteName: 'lingbrew',
     images: [
       {
         url: '/og-image.png',
         width: 1200,
         height: 630,
-        alt: 'Infinite Language - 영어 학습 플랫폼',
+        alt: 'lingbrew - AI 언어 학습 플랫폼',
       }
     ],
     locale: 'ko_KR',
@@ -45,7 +45,7 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: 'summary_large_image',
-    title: 'Infinite Language - 무한 영어 학습',
+    title: 'lingbrew - AI 언어 학습',
     description: 'AI 기반 영어 학습 플랫폼으로 매일 새로운 영어 문장을 만들며 실력을 향상시키세요.',
     images: ['/og-image.png'],
   },
@@ -73,7 +73,7 @@ export default function RootLayout({
   const jsonLd = {
     '@context': 'https://schema.org',
     '@type': 'WebApplication',
-    name: 'Infinite Language',
+    name: 'lingbrew',
     applicationCategory: 'EducationalApplication',
     description: 'AI 기반 영어 학습 플랫폼으로 매일 새로운 영어 문장을 만들며 실력을 향상시키세요.',
     url: 'https://lingbrew.com',
@@ -85,7 +85,7 @@ export default function RootLayout({
     },
     creator: {
       '@type': 'Organization',
-      name: 'Infinite Language Team',
+      name: 'lingbrew Team',
     },
     educationalUse: ['영어 학습', '문장 구성 연습', '어휘 학습'],
     learningResourceType: 'Quiz',

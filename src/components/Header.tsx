@@ -18,7 +18,7 @@ export default function Header() {
           <div className="flex items-center space-x-6">
             <Link href="/">
               <h1 className="text-lg sm:text-xl font-bold gradient-title cursor-pointer">
-                Infinite Language
+                lingbrew
               </h1>
             </Link>
             <div className="hidden md:flex">
