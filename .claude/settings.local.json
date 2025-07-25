@@ -37,7 +37,8 @@
       "Bash(taskkill:*)",
       "Bash(pkill:*)",
       "mcp__supabase__get_anon_key",
-      "Bash(git push:*)"
+      "Bash(git push:*)",
+      "Bash(npm i:*)"
     ],
     "deny": []
   },
