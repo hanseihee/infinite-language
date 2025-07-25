@@ -10,7 +10,7 @@ export default function HomePage() {
   const [selectedEnvironment, setSelectedEnvironment] = useState<string | null>(null);
   const [customEnvironment, setCustomEnvironment] = useState<string>('');
   const [remainingAttempts, setRemainingAttempts] = useState<number | null>(null);
-  const { user } = useAuth();
+  const { user, signInWithGoogle } = useAuth();
 
   const difficulties = ['쉬움', '중간', '어려움'];
   const environments = ['일상', '회사', '쇼핑', '여행', '레스토랑', '병원', '학교', '공항'];
@@ -37,11 +37,16 @@ export default function HomePage() {
     if (!user) return null;
 
     try {
+      console.log('Checking quiz attempts for user:', user.id);
       const response = await fetch(`/api/quiz-attempts?user_id=${user.id}`);
       const data = await response.json();
+      console.log('Quiz attempts response:', data);
       
-      if (data.success && typeof data.remaining_attempts === 'number') {
-        setRemainingAttempts(data.remaining_attempts);
+      if (data.success && data.data && typeof data.data.remaining_attempts === 'number') {
+        setRemainingAttempts(data.data.remaining_attempts);
+        console.log('Remaining attempts set to:', data.data.remaining_attempts);
+      } else {
+        console.error('Invalid response format:', data);
       }
     } catch (error) {
       console.error('Error checking quiz attempts:', error);
@@ -53,6 +58,9 @@ export default function HomePage() {
   useEffect(() => {
     if (user) {
       checkQuizAttempts();
+    } else {
+      // 로그아웃 상태에서는 remainingAttempts 초기화
+      setRemainingAttempts(null);
     }
   }, [user, checkQuizAttempts]);
 
@@ -169,15 +177,15 @@ export default function HomePage() {
             </div>
             
             <button
-              onClick={startQuiz}
-              disabled={!user || remainingAttempts === 0}
+              onClick={user ? startQuiz : signInWithGoogle}
+              disabled={user && remainingAttempts === 0}
               className={`w-full py-3 sm:py-4 px-4 rounded-lg font-bold text-base sm:text-lg transition-all duration-200 
-                ${!user || remainingAttempts === 0
+                ${user && remainingAttempts === 0
                   ? 'bg-gray-600 text-gray-400 cursor-not-allowed' 
                   : 'bg-blue-600 hover:bg-blue-700 text-white shadow-lg hover:shadow-xl'
                 }`}
             >
-              {!user ? '로그인이 필요합니다' : (remainingAttempts === 0 ? '오늘 횟수 초과' : '퀴즈 시작')}
+              {!user ? '로그인' : (remainingAttempts === 0 ? '오늘 횟수 초과' : '퀴즈 시작')}
             </button>
           </div>
         </div>
