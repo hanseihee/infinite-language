@@ -17,7 +17,7 @@ export default function Header() {
           {/* 로고/브랜드 영역과 랭킹 메뉴 (왼쪽) */}
           <div className="flex items-center space-x-6">
             <Link href="/">
-              <h1 className="text-lg sm:text-xl font-bold bg-gradient-to-r from-purple-600 via-blue-600 to-cyan-500 bg-clip-text text-transparent cursor-pointer">
+              <h1 className="text-lg sm:text-xl font-bold gradient-title cursor-pointer">
                 Infinite Language
               </h1>
             </Link>
