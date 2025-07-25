@@ -58,6 +58,38 @@ function QuizPageContent() {
   const [rankingData, setRankingData] = useState<UserProgress[] | null>(null);
   const [userRank, setUserRank] = useState<number | null>(null);
 
+  const recordQuizStart = useCallback(async () => {
+    if (!user) return;
+    
+    try {
+      const response = await fetch('/api/quiz-attempts', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          user_id: user.id,
+          difficulty,
+          environment,
+          score: 0, // 시작 시점이므로 0점
+          total_questions: 10
+        }),
+      });
+
+      if (response.ok) {
+        console.log('✅ Quiz start recorded - count decreased');
+      } else {
+        const errorData = await response.text();
+        console.error('❌ Failed to record quiz start:', {
+          status: response.status,
+          error: errorData
+        });
+      }
+    } catch (error) {
+      console.error('❌ Error recording quiz start:', error);
+    }
+  }, [user, difficulty, environment]);
+
   const generateSentences = useCallback(async () => {
     setIsLoading(true);
     setError(null);
@@ -90,38 +122,6 @@ function QuizPageContent() {
       setIsLoading(false);
     }
   }, [difficulty, environment, recordQuizStart]);
-
-  const recordQuizStart = async () => {
-    if (!user) return;
-    
-    try {
-      const response = await fetch('/api/quiz-attempts', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          user_id: user.id,
-          difficulty,
-          environment,
-          score: 0, // 시작 시점이므로 0점
-          total_questions: 10
-        }),
-      });
-
-      if (response.ok) {
-        console.log('✅ Quiz start recorded - count decreased');
-      } else {
-        const errorData = await response.text();
-        console.error('❌ Failed to record quiz start:', {
-          status: response.status,
-          error: errorData
-        });
-      }
-    } catch (error) {
-      console.error('❌ Error recording quiz start:', error);
-    }
-  };
 
   useEffect(() => {
     if (difficulty && environment) {

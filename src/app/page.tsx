@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import Dropdown from '@/components/Dropdown';
 import Header from '@/components/Header';
 import { useAuth } from '@/contexts/AuthContext';
@@ -23,7 +23,7 @@ export default function Home() {
   const finalEnvironment = getFinalEnvironment();
 
   // 사용자의 일일 퀴즈 시도 횟수 확인
-  const checkQuizAttempts = async () => {
+  const checkQuizAttempts = useCallback(async () => {
     if (!user) return null;
 
     try {
@@ -38,7 +38,7 @@ export default function Home() {
       console.error('Error checking quiz attempts:', error);
     }
     return null;
-  };
+  }, [user]);
 
   // 사용자가 로그인하면 시도 횟수 확인
   useEffect(() => {
