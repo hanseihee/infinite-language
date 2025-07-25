@@ -3,6 +3,7 @@
 import { useState, useEffect, useCallback } from 'react';
 import Dropdown from '@/components/Dropdown';
 import Header from '@/components/Header';
+import GoogleAdsense from '@/components/GoogleAdsense';
 import { useAuth } from '@/contexts/AuthContext';
 
 export default function HomePage() {
@@ -118,6 +119,16 @@ export default function HomePage() {
             <span className="sr-only"> - AI 언어 학습 플랫폼</span>
           </h1>
           
+          {/* Google AdSense - 상단 배너 */}
+          {process.env.NEXT_PUBLIC_GOOGLE_ADSENSE_ID && (
+            <div className="mb-6">
+              <GoogleAdsense 
+                adSlot="1234567890" 
+                adFormat="auto"
+                className="text-center"
+              />
+            </div>
+          )}
 
           
           <div className="space-y-6">

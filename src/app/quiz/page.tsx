@@ -3,6 +3,7 @@
 import { useState, useEffect, useCallback, Suspense } from 'react';
 import { useSearchParams } from 'next/navigation';
 import WordSelector from '@/components/WordSelector';
+import GoogleAdsense from '@/components/GoogleAdsense';
 import { useAuth } from '@/contexts/AuthContext';
 import { useUserDisplay } from '@/hooks/useUserDisplay';
 import { supabase } from '@/lib/supabase';
@@ -620,6 +621,17 @@ function QuizPageContent() {
               <strong>난이도:</strong> {difficulty} | <strong>환경:</strong> {environment}
             </p>
           </div>
+
+          {/* Google AdSense - 퀴즈 중간 */}
+          {process.env.NEXT_PUBLIC_GOOGLE_ADSENSE_ID && currentSentenceIndex === Math.floor(sentences.length / 2) && (
+            <div className="mb-6">
+              <GoogleAdsense 
+                adSlot="0987654321" 
+                adFormat="rectangle"
+                className="text-center"
+              />
+            </div>
+          )}
 
           <div className="mb-6 sm:mb-8">
             <h2 className="text-base sm:text-lg lg:text-xl font-semibold mb-3 sm:mb-4">
