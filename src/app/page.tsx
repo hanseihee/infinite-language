@@ -15,14 +15,14 @@ export default function HomePage() {
   const environments = ['일상', '회사', '쇼핑', '여행', '레스토랑', '병원', '학교', '공항'];
 
   const getFinalEnvironment = () => {
-    const savedEnvironment = localStorage.getItem('lastEnvironment');
-    if (savedEnvironment && environments.includes(savedEnvironment)) {
-      return savedEnvironment;
+    if (typeof window !== 'undefined') {
+      const savedEnvironment = localStorage.getItem('lastEnvironment');
+      if (savedEnvironment && environments.includes(savedEnvironment)) {
+        return savedEnvironment;
+      }
     }
     return environments[0];
   };
-
-  const finalEnvironment = getFinalEnvironment();
 
   // 사용자의 일일 퀴즈 시도 횟수 확인
   const checkQuizAttempts = useCallback(async () => {
@@ -123,7 +123,7 @@ export default function HomePage() {
                 options={environments} 
                 placeholder="환경을 선택하세요"
                 onSelect={setSelectedEnvironment}
-                defaultValue={finalEnvironment}
+                defaultValue={getFinalEnvironment()}
               />
             </div>
             
