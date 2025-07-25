@@ -1,0 +1,23 @@
+// Simple text-based favicon for lingbrew
+// Run with Node.js using canvas library
+
+const fs = require('fs');
+
+// Create a simple SVG favicon
+const createSimpleFavicon = () => {
+  return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" width="32" height="32">
+    <defs>
+      <linearGradient id="bg" x1="0%" y1="0%" x2="100%" y2="100%">
+        <stop offset="0%" style="stop-color:#3B82F6"/>
+        <stop offset="100%" style="stop-color:#8B5CF6"/>
+      </linearGradient>
+    </defs>
+    <rect width="32" height="32" rx="6" fill="url(#bg)"/>
+    <text x="16" y="22" font-family="Arial, sans-serif" font-size="18" font-weight="bold" 
+          text-anchor="middle" fill="white">L</text>
+  </svg>`;
+};
+
+// Write simple favicon
+fs.writeFileSync('./public/favicon-simple.svg', createSimpleFavicon());
+console.log('Simple favicon created successfully!');

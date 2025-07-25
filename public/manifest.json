@@ -1,0 +1,27 @@
+{
+  "name": "lingbrew - AI 언어 학습",
+  "short_name": "lingbrew",
+  "description": "AI 기반 영어 학습 플랫폼으로 매일 새로운 영어 문장을 만들며 실력을 향상시키세요.",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#14171D",
+  "theme_color": "#3B82F6",
+  "orientation": "portrait",
+  "icons": [
+    {
+      "src": "/favicon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "/apple-touch-icon.svg",
+      "sizes": "180x180",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ],
+  "categories": ["education", "productivity"],
+  "lang": "ko-KR",
+  "dir": "ltr"
+}

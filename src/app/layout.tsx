@@ -18,6 +18,17 @@ const geistMono = Geist_Mono({
 export const metadata: Metadata = {
   title: "lingbrew - AI 언어 학습 | 영어 문장 만들기 연습",
   description: "AI 기반 영어 학습 플랫폼으로 매일 새로운 영어 문장을 만들며 실력을 향상시키세요. 난이도별 학습, 실시간 발음 지원, 랭킹 시스템까지!",
+  icons: {
+    icon: [
+      { url: '/favicon.svg', type: 'image/svg+xml' },
+      { url: '/favicon-simple.svg', type: 'image/svg+xml' }
+    ],
+    shortcut: ['/favicon.ico'],
+    apple: [
+      { url: '/apple-touch-icon.svg', sizes: '180x180', type: 'image/svg+xml' }
+    ]
+  },
+  manifest: '/manifest.json',
   keywords: "영어학습, 영어문장만들기, 영어공부, 온라인영어, 영어퀴즈, 영어게임, 무료영어학습, AI영어학습, 영어문법, 영어회화",
   authors: [{ name: "lingbrew Team" }],
   creator: "lingbrew",

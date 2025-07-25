@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Favicon Generator for lingbrew</title>
+</head>
+<body>
+    <h1>Favicon Generator</h1>
+    <canvas id="canvas" width="512" height="512" style="border: 1px solid #ccc;"></canvas>
+    <br><br>
+    <button onclick="downloadFavicon(16)">Download 16x16</button>
+    <button onclick="downloadFavicon(32)">Download 32x32</button>
+    <button onclick="downloadFavicon(180)">Download 180x180 (Apple)</button>
+    <button onclick="downloadFavicon(192)">Download 192x192 (Android)</button>
+    <button onclick="downloadFavicon(512)">Download 512x512</button>
+
+    <script>
+        function drawFavicon(size) {
+            const canvas = document.getElementById('canvas');
+            const ctx = canvas.getContext('2d');
+            
+            // Clear canvas
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            
+            // Scale factor
+            const scale = size / 100;
+            ctx.scale(scale, scale);
+            
+            // Create gradients
+            const grad1 = ctx.createLinearGradient(0, 0, 100, 100);
+            grad1.addColorStop(0, '#3B82F6');
+            grad1.addColorStop(0.5, '#8B5CF6');
+            grad1.addColorStop(1, '#EC4899');
+            
+            const grad2 = ctx.createLinearGradient(0, 0, 100, 100);
+            grad2.addColorStop(0, '#10B981');
+            grad2.addColorStop(1, '#3B82F6');
+            
+            // Background circle
+            ctx.beginPath();
+            ctx.arc(50, 50, 45, 0, 2 * Math.PI);
+            ctx.fillStyle = grad1;
+            ctx.fill();
+            ctx.strokeStyle = '#fff';
+            ctx.lineWidth = 2;
+            ctx.stroke();
+            
+            // Speech bubble
+            ctx.beginPath();
+            ctx.ellipse(35, 35, 18, 14, 0, 0, 2 * Math.PI);
+            ctx.fillStyle = 'rgba(255, 255, 255, 0.9)';
+            ctx.fill();
+            
+            // Speech bubble tail
+            ctx.beginPath();
+            ctx.moveTo(35, 49);
+            ctx.lineTo(35, 55);
+            ctx.lineTo(41, 49);
+            ctx.closePath();
+            ctx.fill();
+            
+            // Text lines
+            ctx.strokeStyle = grad2;
+            ctx.lineWidth = 2;
+            ctx.lineCap = 'round';
+            
+            ctx.beginPath();
+            ctx.moveTo(25, 30);
+            ctx.lineTo(40, 30);
+            ctx.stroke();
+            
+            ctx.beginPath();
+            ctx.moveTo(25, 35);
+            ctx.lineTo(38, 35);
+            ctx.stroke();
+            
+            ctx.beginPath();
+            ctx.moveTo(25, 40);
+            ctx.lineTo(42, 40);
+            ctx.stroke();
+            
+            // Brain shape
+            ctx.beginPath();
+            ctx.moveTo(60, 30);
+            ctx.quadraticCurveTo(70, 25, 75, 35);
+            ctx.quadraticCurveTo(80, 30, 80, 40);
+            ctx.quadraticCurveTo(85, 45, 80, 50);
+            ctx.quadraticCurveTo(75, 55, 70, 50);
+            ctx.quadraticCurveTo(65, 55, 60, 50);
+            ctx.quadraticCurveTo(55, 45, 60, 40);
+            ctx.quadraticCurveTo(55, 35, 60, 30);
+            ctx.closePath();
+            ctx.fillStyle = 'rgba(255, 255, 255, 0.9)';
+            ctx.fill();
+            ctx.strokeStyle = grad2;
+            ctx.lineWidth = 1;
+            ctx.stroke();
+            
+            // Neural dots
+            ctx.fillStyle = grad2;
+            [
+                [62, 35, 1.5],
+                [68, 38, 1.5],
+                [72, 45, 1.5],
+                [65, 48, 1.5]
+            ].forEach(([x, y, r]) => {
+                ctx.beginPath();
+                ctx.arc(x, y, r, 0, 2 * Math.PI);
+                ctx.fill();
+            });
+            
+            // Connection lines
+            ctx.strokeStyle = grad2;
+            ctx.lineWidth = 0.8;
+            ctx.globalAlpha = 0.7;
+            
+            const connections = [
+                [62, 35, 68, 38],
+                [68, 38, 72, 45],
+                [72, 45, 65, 48],
+                [65, 48, 62, 35]
+            ];
+            
+            connections.forEach(([x1, y1, x2, y2]) => {
+                ctx.beginPath();
+                ctx.moveTo(x1, y1);
+                ctx.lineTo(x2, y2);
+                ctx.stroke();
+            });
+            
+            ctx.globalAlpha = 1;
+            
+            // Book
+            ctx.fillStyle = 'rgba(255, 255, 255, 0.9)';
+            ctx.fillRect(40, 65, 20, 15);
+            
+            ctx.strokeStyle = grad2;
+            ctx.lineWidth = 1;
+            
+            ctx.beginPath();
+            ctx.moveTo(42, 70);
+            ctx.lineTo(58, 70);
+            ctx.stroke();
+            
+            ctx.beginPath();
+            ctx.moveTo(42, 74);
+            ctx.lineTo(55, 74);
+            ctx.stroke();
+            
+            ctx.globalAlpha = 0.5;
+            ctx.beginPath();
+            ctx.moveTo(50, 65);
+            ctx.lineTo(50, 80);
+            ctx.stroke();
+            ctx.globalAlpha = 1;
+            
+            ctx.setTransform(1, 0, 0, 1, 0, 0);
+        }
+        
+        function downloadFavicon(size) {
+            const canvas = document.createElement('canvas');
+            canvas.width = size;
+            canvas.height = size;
+            const ctx = canvas.getContext('2d');
+            
+            // Scale and draw
+            ctx.scale(size / 100, size / 100);
+            
+            // Redraw at correct size
+            drawFavicon(size);
+            
+            // Copy from main canvas
+            const mainCanvas = document.getElementById('canvas');
+            ctx.drawImage(mainCanvas, 0, 0, 512, 512, 0, 0, 100, 100);
+            
+            // Download
+            const link = document.createElement('a');
+            link.download = `favicon-${size}x${size}.png`;
+            link.href = canvas.toDataURL();
+            link.click();
+        }
+        
+        // Draw initial favicon
+        drawFavicon(512);
+    </script>
+</body>
+</html>

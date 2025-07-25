@@ -1,0 +1,21 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 180 180" width="180" height="180">
+  <defs>
+    <linearGradient id="bg" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#3B82F6"/>
+      <stop offset="50%" style="stop-color:#8B5CF6"/>
+      <stop offset="100%" style="stop-color:#EC4899"/>
+    </linearGradient>
+  </defs>
+  
+  <!-- Background -->
+  <rect width="180" height="180" rx="40" fill="url(#bg)"/>
+  
+  <!-- Speech bubble -->
+  <path d="M40 60 Q40 50 50 50 L130 50 Q140 50 140 60 L140 100 Q140 110 130 110 L70 110 L40 130 L40 110 Q40 100 40 100 Z" 
+        fill="white" opacity="0.95"/>
+  
+  <!-- Text dots representing language -->
+  <circle cx="70" cy="80" r="6" fill="#3B82F6"/>
+  <circle cx="90" cy="80" r="6" fill="#8B5CF6"/>
+  <circle cx="110" cy="80" r="6" fill="#EC4899"/>
+</svg>
