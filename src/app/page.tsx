@@ -82,7 +82,7 @@ export default function HomePage() {
       <Header />
       <main className="min-h-screen w-full overflow-x-hidden" style={{backgroundColor: '#14171D'}}>
         <div className="max-w-md mx-auto px-4 pt-16 sm:pt-24 pb-8">
-          <h1 className="text-2xl sm:text-3xl font-bold text-center mb-8 sm:mb-12 gradient-title">
+          <h1 className="gradient-title text-3xl sm:text-5xl lg:text-7xl font-bold text-center mb-8 sm:mb-12 py-4 leading-tight tracking-tight">
             Infinite Language
             <span className="sr-only"> - 무한 영어 학습 플랫폼</span>
           </h1>
