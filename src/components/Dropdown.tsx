@@ -3,16 +3,20 @@
 import { useState } from 'react';
 
 interface DropdownProps {
-  label: string;
+  label?: string;
+  placeholder?: string;
   options: string[];
   onSelect: (option: string) => void;
   selectedOption?: string;
+  defaultValue?: string;
 }
 
-export default function Dropdown({ label, options, onSelect, selectedOption }: DropdownProps) {
+export default function Dropdown({ label, placeholder, options, onSelect, selectedOption, defaultValue }: DropdownProps) {
   const [isOpen, setIsOpen] = useState(false);
+  const [selected, setSelected] = useState(defaultValue || selectedOption || '');
 
   const handleSelect = (option: string) => {
+    setSelected(option);
     onSelect(option);
     setIsOpen(false);
   };
@@ -26,7 +30,7 @@ export default function Dropdown({ label, options, onSelect, selectedOption }: D
           style={{backgroundColor: '#252B36'}}
           onClick={() => setIsOpen(!isOpen)}
         >
-          {selectedOption || label}
+          {selected || selectedOption || placeholder || label || '선택하세요'}
           <svg
             className={`-mr-1 h-5 w-5 text-slate-400 transition-transform ${
               isOpen ? 'rotate-180' : ''
