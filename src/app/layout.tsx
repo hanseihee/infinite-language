@@ -114,6 +114,7 @@ export default function RootLayout({
           type="application/ld+json"
           dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
         />
+        <meta name="theme-color" content="#3B82F6" />
         {/* Google AdSense */}
         {process.env.NEXT_PUBLIC_GOOGLE_ADSENSE_ID && (
           <script

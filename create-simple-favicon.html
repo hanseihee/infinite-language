@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Create Simple Favicon</title>
+</head>
+<body>
+    <h1>Creating favicon...</h1>
+    <canvas id="canvas" width="32" height="32" style="border: 1px solid #ccc; width: 128px; height: 128px;"></canvas>
+    <br><br>
+    <button onclick="downloadICO()">Download as ICO</button>
+    <button onclick="downloadPNG16()">Download 16x16 PNG</button>
+    <button onclick="downloadPNG32()">Download 32x32 PNG</button>
+
+    <script>
+        function drawFavicon() {
+            const canvas = document.getElementById('canvas');
+            const ctx = canvas.getContext('2d');
+            
+            // Clear canvas
+            ctx.clearRect(0, 0, 32, 32);
+            
+            // Create gradient
+            const gradient = ctx.createLinearGradient(0, 0, 32, 32);
+            gradient.addColorStop(0, '#3B82F6');
+            gradient.addColorStop(0.5, '#8B5CF6');
+            gradient.addColorStop(1, '#EC4899');
+            
+            // Background
+            ctx.fillStyle = gradient;
+            ctx.fillRect(0, 0, 32, 32);
+            
+            // Speech bubble
+            ctx.fillStyle = 'rgba(255, 255, 255, 0.95)';
+            ctx.beginPath();
+            ctx.roundRect(6, 8, 20, 12, 2);
+            ctx.fill();
+            
+            // Speech bubble tail
+            ctx.beginPath();
+            ctx.moveTo(8, 20);
+            ctx.lineTo(8, 25);
+            ctx.lineTo(12, 20);
+            ctx.closePath();
+            ctx.fill();
+            
+            // Dots
+            const dots = [
+                {x: 10, y: 14, color: '#3B82F6'},
+                {x: 16, y: 14, color: '#8B5CF6'},
+                {x: 22, y: 14, color: '#EC4899'}
+            ];
+            
+            dots.forEach(dot => {
+                ctx.fillStyle = dot.color;
+                ctx.beginPath();
+                ctx.arc(dot.x, dot.y, 1.5, 0, 2 * Math.PI);
+                ctx.fill();
+            });
+        }
+        
+        function downloadICO() {
+            const canvas = document.getElementById('canvas');
+            const link = document.createElement('a');
+            link.download = 'favicon.ico';
+            link.href = canvas.toDataURL('image/x-icon');
+            link.click();
+        }
+        
+        function downloadPNG16() {
+            const tempCanvas = document.createElement('canvas');
+            tempCanvas.width = 16;
+            tempCanvas.height = 16;
+            const ctx = tempCanvas.getContext('2d');
+            
+            const mainCanvas = document.getElementById('canvas');
+            ctx.drawImage(mainCanvas, 0, 0, 32, 32, 0, 0, 16, 16);
+            
+            const link = document.createElement('a');
+            link.download = 'favicon-16x16.png';
+            link.href = tempCanvas.toDataURL('image/png');
+            link.click();
+        }
+        
+        function downloadPNG32() {
+            const canvas = document.getElementById('canvas');
+            const link = document.createElement('a');
+            link.download = 'favicon-32x32.png';
+            link.href = canvas.toDataURL('image/png');
+            link.click();
+        }
+        
+        // Draw the favicon
+        drawFavicon();
+    </script>
+</body>
+</html>
