@@ -16,51 +16,71 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    const prompt = `Generate 5 unique English sentences for language learning practice with the following criteria:
-- Difficulty level: ${difficulty}
-- Context/Environment: ${environment}
-**If ${difficulty} = "쉬움"**
-- Use simple present, past, and future tenses only
-- Vocabulary: 1000 most common English words
-- Sentence length: 3-8 words maximum
-- Grammar: Basic subject-verb-object patterns
-- No idioms, phrasal verbs, or slang
-- Examples: "I like coffee.", "Where is the bathroom?", "Can you help me?"
+    // 난이도별 스펙 정의
+    const levelSpecs: Record<string, any> = {
+      '쉬움': {
+        words: '3-8',
+        grammar: 'simple tenses only',
+        vocab: 'basic 1000 words',
+        avoid: 'idioms, phrasal verbs'
+      },
+      '중간': {
+        words: '6-12',
+        grammar: 'perfect/continuous/conditionals',
+        vocab: '3000 words + phrasal verbs',
+        include: 'common idioms'
+      },
+      '어려움': {
+        words: '10-15',
+        grammar: 'all tenses + subjunctive',
+        vocab: 'advanced + idioms',
+        include: 'cultural expressions'
+      }
+    };
 
-**If ${difficulty} = "중간"**
-- Use present perfect, past continuous, conditionals
-- Vocabulary: 2000-3000 most common words + some intermediate terms
-- Sentence length: 6-12 words
-- Grammar: Complex sentences with conjunctions, relative clauses
-- Include basic phrasal verbs and simple idioms
-- Examples: "I've been waiting for an hour.", "If I were you, I'd take the job."
+    // 환경별 컨텍스트
+    const contextExamples: Record<string, string[]> = {
+      '일상': ['morning routine', 'weekend plans', 'weather chat', 'hobbies'],
+      '회사': ['meeting request', 'deadline talk', 'project update', 'team lunch'],
+      '쇼핑': ['price check', 'size inquiry', 'return policy', 'discount'],
+      '여행': ['directions', 'check-in', 'local tips', 'transportation'],
+      '레스토랑': ['reservation', 'order', 'dietary needs', 'bill payment'],
+      '병원': ['symptoms', 'appointment', 'prescription', 'insurance'],
+      '학교': ['homework', 'schedule', 'grades', 'activities'],
+      '공항': ['boarding', 'baggage', 'customs', 'delays']
+    };
 
-**If ${difficulty} = "어려움"**
-- Use advanced tenses (past perfect, future perfect, subjunctive)
-- Vocabulary: Advanced words, technical terms, sophisticated expressions
-- Sentence length: 10-15 words
-- Grammar: Complex structures, passive voice, advanced conditionals
-- Include advanced idioms, slang, cultural references
-- Examples: "Had I known about the traffic, I would've left earlier.", "She's been burning the midnight oil lately."
-- Each sentence should be practical and commonly used in real situations
-- Mix different sentence structures (questions, statements, requests)
-- Each sentence must be completely different from the others
-- Return ONLY a JSON array of objects with "sentence" and "korean" properties
-- No explanations or additional text
+    const spec = levelSpecs[difficulty] || levelSpecs['중간'];
+    const context = contextExamples[environment] || ['general conversation'];
 
-Example format:
-[
-  {"sentence": "Do you have this in another size?", "korean": "다른 사이즈가 있나요?"},
-  {"sentence": "I would like to make a reservation.", "korean": "예약하고 싶습니다."},
-  {"sentence": "How much does this cost?", "korean": "이것은 얼마인가요?"},
-  {"sentence": "Can I get the check please?", "korean": "계산서 주세요."},
-  {"sentence": "Where is the nearest subway station?", "korean": "가장 가까운 지하철역이 어디인가요?"}
-]`;
+    const prompt = `Create 10 ${difficulty} English sentences for ${environment}.
 
+Rules:
+- ${spec.words} words per sentence
+- Use ${spec.grammar}
+- Vocabulary: ${spec.vocab}
+- Mix: questions (3), statements (4), requests (3)
+- Topics: ${context.join(', ')}
+- Each sentence must be unique
+${spec.avoid ? `- Avoid: ${spec.avoid}` : ''}
+${spec.include ? `- Include: ${spec.include}` : ''}
+
+Format: [{"sentence":"...", "korean":"..."}]`;
+
+    // 난이도에 따른 temperature 동적 조정
+    const temperature = difficulty === '어려움' ? 0.8 : difficulty === '쉬움' ? 0.6 : 0.7;
+    
     const completion = await openai.chat.completions.create({
-      messages: [{ role: 'user', content: prompt }],
+      messages: [
+        { 
+          role: 'system', 
+          content: 'English teacher for Korean learners. Create practical, varied sentences suitable for real-life situations.'
+        },
+        { role: 'user', content: prompt }
+      ],
       model: 'gpt-3.5-turbo',
-      temperature: 0.7,
+      temperature: temperature,
+      max_tokens: 1000
     });
 
     const responseText = completion.choices[0]?.message?.content;
