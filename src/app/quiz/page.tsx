@@ -677,7 +677,7 @@ function QuizPageContent() {
           {/* 프로그래스바 */}
           <div className="mb-6 sm:mb-8">
             <ProgressBar 
-              current={currentSentenceIndex + 1} 
+              current={showResults ? sentences.length + 1 : currentSentenceIndex + 1} 
               total={sentences.length} 
               className="mb-4"
             />

@@ -38,14 +38,14 @@ export default function ProgressBar({ current, total, className = '' }: Progress
         </div>
         
         {/* 완료 시 반짝이는 효과 */}
-        {percentage === 100 && (
+        {current > total && (
           <div className="absolute inset-0 bg-gradient-to-r from-yellow-400/30 via-white/40 to-yellow-400/30 animate-ping"></div>
         )}
       </div>
       
-      {/* 단계별 포인트 표시 */}
+      {/* 단계별 포인트 표시 (시작점 + 각 문제 완료점) */}
       <div className="flex justify-between mt-2">
-        {Array.from({ length: total }, (_, index) => (
+        {Array.from({ length: total + 1 }, (_, index) => (
           <div
             key={index}
             className={`w-2 h-2 rounded-full transition-all duration-300 ${
@@ -60,7 +60,7 @@ export default function ProgressBar({ current, total, className = '' }: Progress
       </div>
       
       {/* 완료 메시지 */}
-      {percentage === 100 && (
+      {current > total && (
         <div className="text-center mt-3">
           <span className="text-sm font-bold bg-gradient-to-r from-green-600 to-blue-600 bg-clip-text text-transparent animate-bounce">
             🎉 모든 문제 완료!
