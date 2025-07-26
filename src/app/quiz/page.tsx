@@ -22,6 +22,13 @@ interface AnswerResult {
   correctAnswer: string;
 }
 
+interface AnswerAnalysis {
+  mainError: string;
+  explanation: string;
+  tip: string;
+  commonMistake: boolean;
+}
+
 interface UserProgress {
   id: string;
   user_id: string;
@@ -58,6 +65,8 @@ function QuizPageContent() {
   const [isPlayingTTS, setIsPlayingTTS] = useState(false);
   const [rankingData, setRankingData] = useState<UserProgress[] | null>(null);
   const [userRank, setUserRank] = useState<number | null>(null);
+  const [answerAnalysis, setAnswerAnalysis] = useState<AnswerAnalysis | null>(null);
+  const [isAnalyzing, setIsAnalyzing] = useState(false);
 
   const recordQuizStart = useCallback(async () => {
     if (!user) return;
@@ -258,6 +267,11 @@ function QuizPageContent() {
     
     // TTS 음성 재생
     playTTS(currentSentence.originalSentence);
+    
+    // 오답인 경우 분석 실행
+    if (!isCorrect) {
+      analyzeWrongAnswer(currentSentence.originalSentence, answerText);
+    }
   };
 
   const checkCurrentAnswer = () => {
@@ -269,6 +283,42 @@ function QuizPageContent() {
     
     const currentSentence = sentences[currentSentenceIndex];
     playTTS(currentSentence.originalSentence);
+  };
+
+  const analyzeWrongAnswer = async (correctAnswer: string, userAnswer: string) => {
+    if (!userAnswer || userAnswer === correctAnswer) return;
+    
+    setIsAnalyzing(true);
+    setAnswerAnalysis(null);
+    
+    try {
+      const response = await fetch('/api/analyze-answer', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          correctAnswer,
+          userAnswer,
+          difficulty,
+          environment
+        }),
+      });
+
+      if (!response.ok) {
+        throw new Error('Failed to analyze answer');
+      }
+
+      const data = await response.json();
+      if (data.success && data.analysis) {
+        setAnswerAnalysis(data.analysis);
+      }
+    } catch (error) {
+      console.error('Error analyzing answer:', error);
+      // 에러가 발생해도 사용자 경험에 영향을 주지 않도록 조용히 처리
+    } finally {
+      setIsAnalyzing(false);
+    }
   };
 
   const saveProgressToSupabase = async (correctCount: number, totalQuestions: number) => {
@@ -389,6 +439,7 @@ function QuizPageContent() {
       setCurrentSentenceIndex(currentSentenceIndex + 1);
       setCurrentAnswer('');
       setShowFeedback(false);
+      setAnswerAnalysis(null);
     } else {
       const correctCount = answerResults.filter(result => result.isCorrect).length;
       saveProgressToSupabase(correctCount, sentences.length);
@@ -710,6 +761,46 @@ function QuizPageContent() {
                     </span>
                   </button>
                 </div>
+              </div>
+            )}
+
+            {/* 오답 분석 결과 */}
+            {showFeedback && !answerResults[currentSentenceIndex]?.isCorrect && (
+              <div className="mt-3 sm:mt-4">
+                {isAnalyzing ? (
+                  <div className="p-3 sm:p-4 bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 rounded-lg">
+                    <div className="flex items-center space-x-2">
+                      <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-blue-600"></div>
+                      <span className="text-sm text-blue-700 dark:text-blue-300">오답 분석 중...</span>
+                    </div>
+                  </div>
+                ) : answerAnalysis && (
+                  <div className="p-3 sm:p-4 bg-amber-50 dark:bg-amber-900/20 border border-amber-200 dark:border-amber-800 rounded-lg">
+                    <h4 className="text-sm font-semibold text-amber-800 dark:text-amber-200 mb-2 flex items-center">
+                      <span className="mr-2">💡</span>
+                      왜 틀렸을까요?
+                    </h4>
+                    <div className="space-y-2 text-sm">
+                      <div>
+                        <span className="font-medium text-amber-700 dark:text-amber-300">주요 오류:</span>
+                        <span className="ml-2 text-amber-600 dark:text-amber-400">{answerAnalysis.mainError}</span>
+                      </div>
+                      <div>
+                        <span className="font-medium text-amber-700 dark:text-amber-300">설명:</span>
+                        <p className="mt-1 text-amber-600 dark:text-amber-400">{answerAnalysis.explanation}</p>
+                      </div>
+                      <div className="mt-3 p-2 bg-amber-100 dark:bg-amber-800/20 rounded">
+                        <span className="font-medium text-amber-800 dark:text-amber-200">💡 팁:</span>
+                        <p className="mt-1 text-amber-700 dark:text-amber-300">{answerAnalysis.tip}</p>
+                      </div>
+                      {answerAnalysis.commonMistake && (
+                        <div className="mt-2 text-xs text-amber-600 dark:text-amber-400 italic">
+                          ※ 한국인이 자주 하는 실수예요!
+                        </div>
+                      )}
+                    </div>
+                  </div>
+                )}
               </div>
             )}
           </div>
