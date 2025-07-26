@@ -67,6 +67,7 @@ function QuizPageContent() {
   const [userRank, setUserRank] = useState<number | null>(null);
   const [answerAnalysis, setAnswerAnalysis] = useState<AnswerAnalysis | null>(null);
   const [isAnalyzing, setIsAnalyzing] = useState(false);
+  const [hasGeneratedSentences, setHasGeneratedSentences] = useState(false);
 
   const recordQuizStart = useCallback(async () => {
     if (!user) return;
@@ -123,6 +124,7 @@ function QuizPageContent() {
       const data = await response.json();
       setSentences(data.sentences);
       setUserAnswers(new Array(data.sentences.length).fill(''));
+      setHasGeneratedSentences(true);
       
       // 퀴즈 시작 시점에 기록 저장 (카운트 감소)
       await recordQuizStart();
@@ -134,10 +136,12 @@ function QuizPageContent() {
   }, [difficulty, environment, recordQuizStart]);
 
   useEffect(() => {
-    if (difficulty && environment) {
+    // 이미 문장을 생성했거나 생성 중이면 다시 생성하지 않음
+    if (difficulty && environment && !hasGeneratedSentences && !isLoading) {
       generateSentences();
     }
-  }, [difficulty, environment, generateSentences]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [difficulty, environment, hasGeneratedSentences]); // generateSentences를 의존성에서 제거
 
   const handleWordsChange = (words: string[]) => {
     setCurrentAnswer(words.join(' '));
