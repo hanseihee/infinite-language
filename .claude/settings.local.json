@@ -40,7 +40,8 @@
       "Bash(git push:*)",
       "Bash(npm i:*)",
       "Bash(cp:*)",
-      "Bash(mv:*)"
+      "Bash(mv:*)",
+      "Bash(npm run lint)"
     ],
     "deny": []
   },

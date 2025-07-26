@@ -17,7 +17,15 @@ export async function POST(request: NextRequest) {
     }
 
     // 난이도별 스펙 정의
-    const levelSpecs: Record<string, any> = {
+    type LevelSpec = {
+      words: string;
+      grammar: string;
+      vocab: string;
+      avoid?: string;
+      include?: string;
+    };
+    
+    const levelSpecs: Record<string, LevelSpec> = {
       '쉬움': {
         words: '3-8',
         grammar: 'simple tenses only',
