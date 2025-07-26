@@ -8,7 +8,8 @@ interface QuizPreviewProps {
 
 export default function QuizPreview({ onLoginClick }: QuizPreviewProps) {
   const [showFeedback, setShowFeedback] = useState(false);
-  const [userAnswer, setUserAnswer] = useState('');
+  const [selectedWords, setSelectedWords] = useState<string[]>([]);
+  const [usedIndices, setUsedIndices] = useState<Set<number>>(new Set());
   
   // 더 긴 샘플 문제 데이터
   const sampleQuestion = {
@@ -19,14 +20,17 @@ export default function QuizPreview({ onLoginClick }: QuizPreviewProps) {
     environment: '회사'
   };
 
-  const handleWordClick = (word: string) => {
-    if (showFeedback) return;
+  const handleWordClick = (word: string, index: number) => {
+    if (showFeedback || usedIndices.has(index)) return;
     
-    const newAnswer = userAnswer ? `${userAnswer} ${word}` : word;
-    setUserAnswer(newAnswer);
+    const newSelectedWords = [...selectedWords, word];
+    const newUsedIndices = new Set([...usedIndices, index]);
     
-    // 완성되면 자동으로 피드백 표시
-    if (newAnswer.split(' ').length === sampleQuestion.shuffledWords.length) {
+    setSelectedWords(newSelectedWords);
+    setUsedIndices(newUsedIndices);
+    
+    // 모든 단어를 선택했으면 자동으로 피드백 표시
+    if (newSelectedWords.length === sampleQuestion.shuffledWords.length) {
       setTimeout(() => {
         setShowFeedback(true);
       }, 500);
@@ -35,7 +39,28 @@ export default function QuizPreview({ onLoginClick }: QuizPreviewProps) {
 
   const resetDemo = () => {
     setShowFeedback(false);
-    setUserAnswer('');
+    setSelectedWords([]);
+    setUsedIndices(new Set());
+  };
+
+  const userAnswer = selectedWords.join(' ');
+
+  const handleRemoveWord = (indexToRemove: number) => {
+    const removedWord = selectedWords[indexToRemove];
+    const newSelectedWords = selectedWords.filter((_, index) => index !== indexToRemove);
+    
+    // 원래 위치 찾기
+    const originalIndex = sampleQuestion.shuffledWords.findIndex((word, idx) => 
+      word === removedWord && usedIndices.has(idx)
+    );
+    
+    if (originalIndex !== -1) {
+      const newUsedIndices = new Set(usedIndices);
+      newUsedIndices.delete(originalIndex);
+      setUsedIndices(newUsedIndices);
+    }
+    
+    setSelectedWords(newSelectedWords);
   };
 
   return (
@@ -85,10 +110,22 @@ export default function QuizPreview({ onLoginClick }: QuizPreviewProps) {
               {/* 답안 영역 */}
               <div className="p-4 border-2 border-blue-300 dark:border-blue-600 rounded-lg bg-blue-50 dark:bg-blue-900/20 min-h-[80px]">
                 <p className="text-sm font-semibold text-blue-800 dark:text-blue-200 mb-2">내 답안</p>
-                <div className="min-h-[40px] flex items-center">
-                  <p className="text-base text-blue-700 dark:text-blue-300 leading-relaxed">
-                    {userAnswer || '단어를 클릭하여 문장을 만들어보세요'}
-                  </p>
+                <div className="min-h-[40px] flex flex-wrap gap-2 items-center">
+                  {selectedWords.length === 0 ? (
+                    <p className="text-base text-blue-600 dark:text-blue-300 italic">
+                      단어를 클릭하여 문장을 만들어보세요
+                    </p>
+                  ) : (
+                    selectedWords.map((word, index) => (
+                      <button
+                        key={index}
+                        onClick={() => handleRemoveWord(index)}
+                        className="bg-blue-500 text-white px-2 py-1 rounded-lg text-sm hover:bg-blue-600 transition-colors cursor-pointer"
+                      >
+                        {word}
+                      </button>
+                    ))
+                  )}
                 </div>
               </div>
 
@@ -99,10 +136,10 @@ export default function QuizPreview({ onLoginClick }: QuizPreviewProps) {
                   {sampleQuestion.shuffledWords.map((word, index) => (
                     <button
                       key={index}
-                      onClick={() => handleWordClick(word)}
-                      disabled={userAnswer.includes(word)}
+                      onClick={() => handleWordClick(word, index)}
+                      disabled={usedIndices.has(index)}
                       className={`px-3 py-2 rounded-lg text-sm font-medium transition-all ${
-                        userAnswer.includes(word)
+                        usedIndices.has(index)
                           ? 'bg-gray-300 dark:bg-gray-600 text-gray-500 dark:text-gray-400 cursor-not-allowed opacity-50'
                           : 'bg-green-100 dark:bg-green-900 text-green-800 dark:text-green-200 hover:bg-green-200 dark:hover:bg-green-800 cursor-pointer shadow-sm hover:shadow-md'
                       }`}
