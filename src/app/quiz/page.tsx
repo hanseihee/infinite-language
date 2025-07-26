@@ -4,6 +4,7 @@ import { useState, useEffect, useCallback, Suspense, useRef } from 'react';
 import { useSearchParams } from 'next/navigation';
 import WordSelector from '@/components/WordSelector';
 import GoogleAdsense from '@/components/GoogleAdsense';
+import ProgressBar from '@/components/ProgressBar';
 import { useAuth } from '@/contexts/AuthContext';
 import { useUserDisplay } from '@/hooks/useUserDisplay';
 import { supabase } from '@/lib/supabase';
@@ -83,7 +84,7 @@ function QuizPageContent() {
           difficulty,
           environment,
           score: 0, // 시작 시점이므로 0점
-          total_questions: 10
+          total_questions: 5
         }),
       });
 
@@ -673,8 +674,14 @@ function QuizPageContent() {
             </div>
           </div>
 
-          <div className="mb-4 sm:mb-6">
-            <p className="text-sm sm:text-base lg:text-lg mb-2">
+          {/* 프로그래스바 */}
+          <div className="mb-6 sm:mb-8">
+            <ProgressBar 
+              current={currentSentenceIndex + 1} 
+              total={sentences.length} 
+              className="mb-4"
+            />
+            <p className="text-sm sm:text-base lg:text-lg text-center">
               <strong>난이도:</strong> {difficulty} | <strong>환경:</strong> {environment}
             </p>
           </div>

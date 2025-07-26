@@ -61,13 +61,13 @@ export async function POST(request: NextRequest) {
     const spec = levelSpecs[difficulty] || levelSpecs['중간'];
     const context = contextExamples[environment] || ['general conversation'];
 
-    const prompt = `Create 10 ${difficulty} English sentences for ${environment}.
+    const prompt = `Create 5 ${difficulty} English sentences for ${environment}.
 
 Rules:
 - ${spec.words} words per sentence
 - Use ${spec.grammar}
 - Vocabulary: ${spec.vocab}
-- Mix: questions (3), statements (4), requests (3)
+- Mix: questions (2), statements (2), requests (1)
 - Topics: ${context.join(', ')}
 - Each sentence must be unique
 ${spec.avoid ? `- Avoid: ${spec.avoid}` : ''}

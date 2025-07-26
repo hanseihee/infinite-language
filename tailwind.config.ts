@@ -15,6 +15,7 @@ const config: Config = {
       },
       animation: {
         'gradient': 'gradient 3s ease infinite',
+        'shimmer': 'shimmer 2s ease-in-out infinite',
       },
       keyframes: {
         gradient: {
@@ -23,6 +24,14 @@ const config: Config = {
           },
           '50%': {
             'background-position': '100% 50%',
+          },
+        },
+        shimmer: {
+          '0%': {
+            transform: 'translateX(-100%)',
+          },
+          '100%': {
+            transform: 'translateX(100%)',
           },
         },
       },
