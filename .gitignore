@@ -42,3 +42,5 @@ next-env.d.ts
 
 # MCP configuration with sensitive tokens
 .mcp.json
+
+.vercel

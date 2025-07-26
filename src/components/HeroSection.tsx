@@ -105,7 +105,7 @@ export default function HeroSection({ onGetStarted }: HeroSectionProps) {
               </div>
               
               <div className="absolute bottom-10 left-5 bg-gradient-to-r from-blue-500 to-purple-500 text-white rounded-xl shadow-2xl p-4 animate-float-delayed">
-                <p className="text-base font-semibold mb-1">Today's Goal</p>
+                <p className="text-base font-semibold mb-1">Today&apos;s Goal</p>
                 <div className="flex items-center gap-2">
                   <div className="w-24 h-2 bg-white/30 rounded-full overflow-hidden">
                     <div className="w-3/4 h-full bg-white rounded-full"></div>
