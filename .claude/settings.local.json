@@ -41,7 +41,8 @@
       "Bash(npm i:*)",
       "Bash(cp:*)",
       "Bash(mv:*)",
-      "Bash(npm run lint)"
+      "Bash(npm run lint)",
+      "Bash(vercel:*)"
     ],
     "deny": []
   },

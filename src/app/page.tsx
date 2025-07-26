@@ -125,11 +125,11 @@ export default function HomePage() {
     <>
       <Header />
       <main className="min-h-screen w-full overflow-x-hidden bg-white dark:bg-gray-950">
-        {/* Hero Section */}
-        <HeroSection onGetStarted={handleGetStarted} />
+        {/* Hero Section - only show for non-logged users */}
+        {!user && <HeroSection onGetStarted={handleGetStarted} />}
 
         {/* Quiz Configuration Section */}
-        <section id="quiz-configuration" className="py-16 px-4" style={{backgroundColor: '#14171D'}}>
+        <section id="quiz-configuration" className={`${user ? 'pt-24 pb-16' : 'py-16'} px-4`} style={{backgroundColor: '#14171D'}}>
           <div className="max-w-md mx-auto">
             <div className="text-center mb-8">
               <h2 className="text-2xl sm:text-3xl font-bold mb-3">

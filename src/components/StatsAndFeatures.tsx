@@ -172,16 +172,6 @@ export default function StatsAndFeatures() {
           ))}
         </div>
 
-        {/* CTA 섹션 */}
-        <div className="mt-20 text-center">
-          <div className="inline-block">
-            <div className="bg-gradient-to-r from-blue-100 to-purple-100 dark:from-blue-900/30 dark:to-purple-900/30 rounded-full px-6 py-3 mb-6">
-              <span className="text-sm font-semibold text-blue-700 dark:text-blue-300">
-                🎁 지금 가입하면 평생 무료!
-              </span>
-            </div>
-          </div>
-        </div>
       </div>
     </section>
   );
