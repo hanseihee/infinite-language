@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect, useCallback, Suspense } from 'react';
+import { useState, useEffect, useCallback, Suspense, useRef } from 'react';
 import { useSearchParams } from 'next/navigation';
 import WordSelector from '@/components/WordSelector';
 import GoogleAdsense from '@/components/GoogleAdsense';
@@ -67,7 +67,7 @@ function QuizPageContent() {
   const [userRank, setUserRank] = useState<number | null>(null);
   const [answerAnalysis, setAnswerAnalysis] = useState<AnswerAnalysis | null>(null);
   const [isAnalyzing, setIsAnalyzing] = useState(false);
-  const [hasGeneratedSentences, setHasGeneratedSentences] = useState(false);
+  const hasGeneratedRef = useRef(false);
 
   const recordQuizStart = useCallback(async () => {
     if (!user) return;
@@ -102,6 +102,9 @@ function QuizPageContent() {
   }, [user, difficulty, environment]);
 
   const generateSentences = useCallback(async () => {
+    if (hasGeneratedRef.current) return; // 이미 생성했으면 중단
+    
+    hasGeneratedRef.current = true;
     setIsLoading(true);
     setError(null);
     
@@ -124,24 +127,23 @@ function QuizPageContent() {
       const data = await response.json();
       setSentences(data.sentences);
       setUserAnswers(new Array(data.sentences.length).fill(''));
-      setHasGeneratedSentences(true);
       
       // 퀴즈 시작 시점에 기록 저장 (카운트 감소)
       await recordQuizStart();
     } catch (err) {
       setError(err instanceof Error ? err.message : '알 수 없는 오류가 발생했습니다.');
+      hasGeneratedRef.current = false; // 에러 시 다시 시도 가능하도록
     } finally {
       setIsLoading(false);
     }
   }, [difficulty, environment, recordQuizStart]);
 
   useEffect(() => {
-    // 이미 문장을 생성했거나 생성 중이면 다시 생성하지 않음
-    if (difficulty && environment && !hasGeneratedSentences && !isLoading) {
+    if (difficulty && environment) {
       generateSentences();
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [difficulty, environment, hasGeneratedSentences]); // generateSentences를 의존성에서 제거
+  }, [difficulty, environment]); // generateSentences가 내부적으로 중복 실행을 방지
 
   const handleWordsChange = (words: string[]) => {
     setCurrentAnswer(words.join(' '));
