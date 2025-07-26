@@ -1,10 +1,16 @@
 'use client';
 
 import { useState, useEffect, useCallback } from 'react';
+import dynamic from 'next/dynamic';
 import Dropdown from '@/components/Dropdown';
 import Header from '@/components/Header';
-import GoogleAdsense from '@/components/GoogleAdsense';
+import QuizPreview from '@/components/QuizPreview';
 import { useAuth } from '@/contexts/AuthContext';
+
+// GoogleAdsense를 클라이언트에서만 로드
+const GoogleAdsense = dynamic(() => import('@/components/GoogleAdsense'), {
+  ssr: false
+});
 
 export default function HomePage() {
   const [selectedDifficulty, setSelectedDifficulty] = useState<string | null>(null);
@@ -213,6 +219,35 @@ export default function HomePage() {
             )}
           </div>
         </div>
+
+        {/* 로그인하지 않은 사용자에게 문제 미리보기 표시 */}
+        {!user && (
+          <div className="px-4">
+            <QuizPreview onLoginClick={signInWithGoogle} />
+          </div>
+        )}
+
+        {/* 로그인한 사용자를 위한 추가 정보 */}
+        {user && (
+          <div className="px-4 max-w-md mx-auto mt-8">
+            <div className="bg-gradient-to-r from-green-500 to-blue-500 rounded-xl p-6 text-white text-center">
+              <h3 className="text-lg font-bold mb-2">🎉 환영합니다!</h3>
+              <p className="text-sm mb-4">
+                매일 50문제까지 무료로 학습할 수 있습니다
+              </p>
+              <div className="grid grid-cols-2 gap-4 text-xs">
+                <div className="bg-white/20 rounded-lg p-3">
+                  <p className="font-semibold">🎯 개인 맞춤</p>
+                  <p>5가지 난이도</p>
+                </div>
+                <div className="bg-white/20 rounded-lg p-3">
+                  <p className="font-semibold">🏆 실시간</p>
+                  <p>랭킹 시스템</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        )}
       </main>
     </>
   );

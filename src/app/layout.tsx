@@ -21,11 +21,10 @@ export const metadata: Metadata = {
   icons: {
     icon: [
       { url: '/favicon.svg', type: 'image/svg+xml' },
-      { url: '/favicon-simple.svg', type: 'image/svg+xml' }
+      { url: '/favicon-16x16.png', sizes: '16x16', type: 'image/png' }
     ],
-    shortcut: ['/favicon.ico'],
     apple: [
-      { url: '/apple-touch-icon.svg', sizes: '180x180', type: 'image/svg+xml' }
+      { url: '/apple-touch-icon.png', sizes: '180x180', type: 'image/png' }
     ]
   },
   manifest: '/manifest.json',

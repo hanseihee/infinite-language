@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 
 declare global {
   interface Window {
@@ -23,15 +23,25 @@ export default function GoogleAdsense({
   adLayout,
   className = ''
 }: GoogleAdsenseProps) {
+  const [isClient, setIsClient] = useState(false);
+
   useEffect(() => {
-    try {
-      if (typeof window !== 'undefined') {
-        (window.adsbygoogle = window.adsbygoogle || []).push({});
-      }
-    } catch (error) {
-      console.error('AdSense error:', error);
-    }
+    setIsClient(true);
   }, []);
+
+  useEffect(() => {
+    if (isClient) {
+      try {
+        (window.adsbygoogle = window.adsbygoogle || []).push({});
+      } catch (error) {
+        console.error('AdSense error:', error);
+      }
+    }
+  }, [isClient]);
+
+  if (!isClient) {
+    return <div className={`adsense-container ${className}`} style={{ minHeight: '90px' }} />;
+  }
 
   return (
     <div className={`adsense-container ${className}`}>

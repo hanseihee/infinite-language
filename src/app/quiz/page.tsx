@@ -2,10 +2,15 @@
 
 import { useState, useEffect, useCallback, Suspense, useRef } from 'react';
 import { useSearchParams } from 'next/navigation';
+import dynamic from 'next/dynamic';
 import WordSelector from '@/components/WordSelector';
-import GoogleAdsense from '@/components/GoogleAdsense';
 import ProgressBar from '@/components/ProgressBar';
 import { useAuth } from '@/contexts/AuthContext';
+
+// GoogleAdsense를 클라이언트에서만 로드
+const GoogleAdsense = dynamic(() => import('@/components/GoogleAdsense'), {
+  ssr: false
+});
 import { useUserDisplay } from '@/hooks/useUserDisplay';
 import { supabase } from '@/lib/supabase';
 import Header from '@/components/Header';
