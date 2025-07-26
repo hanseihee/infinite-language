@@ -78,9 +78,8 @@ Format: [{"sentence":"...", "korean":"..."}]`;
         },
         { role: 'user', content: prompt }
       ],
-      model: 'gpt-3.5-turbo',
-      temperature: temperature,
-      max_tokens: 1000
+      model: 'gpt-4o-mini',
+      temperature: temperature
     });
 
     const responseText = completion.choices[0]?.message?.content;
