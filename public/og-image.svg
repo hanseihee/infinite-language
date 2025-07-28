@@ -1,0 +1,26 @@
+<svg width="1200" height="630" viewBox="0 0 1200 630" xmlns="http://www.w3.org/2000/svg">
+  <rect width="1200" height="630" fill="#14171D"/>
+  
+  <!-- Background gradient -->
+  <defs>
+    <linearGradient id="bgGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#3B82F6;stop-opacity:0.1" />
+      <stop offset="100%" style="stop-color:#7C3AED;stop-opacity:0.1" />
+    </linearGradient>
+  </defs>
+  <rect width="1200" height="630" fill="url(#bgGradient)"/>
+  
+  <!-- Logo/Brand -->
+  <text x="600" y="200" font-family="Arial, sans-serif" font-size="72" font-weight="bold" text-anchor="middle" fill="#3B82F6">lingbrew</text>
+  
+  <!-- Tagline -->
+  <text x="600" y="280" font-family="Arial, sans-serif" font-size="36" text-anchor="middle" fill="#E5E7EB">AI 언어 학습 플랫폼</text>
+  
+  <!-- Description -->
+  <text x="600" y="360" font-family="Arial, sans-serif" font-size="24" text-anchor="middle" fill="#9CA3AF">매일 새로운 영어 문장을 만들며 실력을 향상시키세요</text>
+  
+  <!-- Features -->
+  <text x="300" y="460" font-family="Arial, sans-serif" font-size="20" text-anchor="middle" fill="#60A5FA">✓ 난이도별 학습</text>
+  <text x="600" y="460" font-family="Arial, sans-serif" font-size="20" text-anchor="middle" fill="#60A5FA">✓ 실시간 발음 지원</text>
+  <text x="900" y="460" font-family="Arial, sans-serif" font-size="20" text-anchor="middle" fill="#60A5FA">✓ 랭킹 시스템</text>
+</svg>
