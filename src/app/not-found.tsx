@@ -1,14 +1,6 @@
-import Link from 'next/link';
-import type { Metadata } from 'next';
+'use client';
 
-export const metadata: Metadata = {
-  title: '404 - 페이지를 찾을 수 없습니다 | lingbrew',
-  description: '요청하신 페이지를 찾을 수 없습니다. 홈으로 돌아가서 영어 학습을 시작해보세요.',
-  robots: {
-    index: false,
-    follow: false,
-  },
-};
+import Link from 'next/link';
 
 export default function NotFound() {
   return (
