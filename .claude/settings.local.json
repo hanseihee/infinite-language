@@ -42,7 +42,8 @@
       "Bash(cp:*)",
       "Bash(mv:*)",
       "Bash(npm run lint)",
-      "Bash(vercel:*)"
+      "Bash(vercel:*)",
+      "WebFetch(domain:platform.openai.com)"
     ],
     "deny": []
   },
