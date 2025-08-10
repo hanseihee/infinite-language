@@ -75,9 +75,6 @@ ${spec.include ? `- Include: ${spec.include}` : ''}
 
 Format: [{"sentence":"...", "korean":"..."}]`;
 
-    // 난이도에 따른 temperature 동적 조정
-    const temperature = difficulty === '어려움' ? 0.8 : difficulty === '쉬움' ? 0.6 : 0.7;
-    
     const completion = await openai.chat.completions.create({
       messages: [
         { 
@@ -86,8 +83,8 @@ Format: [{"sentence":"...", "korean":"..."}]`;
         },
         { role: 'user', content: prompt }
       ],
-      model: 'gpt-4o-mini',
-      temperature: temperature
+      model: 'gpt-5-mini'
+      // GPT-5 models only support default temperature (1.0)
     });
 
     const responseText = completion.choices[0]?.message?.content;

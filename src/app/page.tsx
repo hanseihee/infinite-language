@@ -46,29 +46,23 @@ export default function HomePage() {
     if (!user) return null;
 
     try {
-      console.log('Checking quiz attempts for user:', user.id);
       const response = await fetch(`/api/quiz-attempts?user_id=${user.id}`);
       
       if (!response.ok) {
-        console.error('API response not ok:', response.status);
         // 에러가 있어도 기본값 설정
         setRemainingAttempts(50);
         return;
       }
       
       const data = await response.json();
-      console.log('Quiz attempts response:', data);
       
       if (data.success && data.data && typeof data.data.remaining_attempts === 'number') {
         setRemainingAttempts(data.data.remaining_attempts);
-        console.log('Remaining attempts set to:', data.data.remaining_attempts);
       } else {
-        console.error('Invalid response format:', data);
         // 응답 형식이 잘못되어도 기본값 설정
         setRemainingAttempts(50);
       }
     } catch (error) {
-      console.error('Error checking quiz attempts:', error);
       // 네트워크 에러 시에도 기본값 설정
       setRemainingAttempts(50);
     }

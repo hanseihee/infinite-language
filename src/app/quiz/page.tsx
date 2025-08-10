@@ -94,16 +94,10 @@ function QuizPageContent() {
       });
 
       if (response.ok) {
-        console.log('✅ Quiz start recorded - count decreased');
       } else {
         const errorData = await response.text();
-        console.error('❌ Failed to record quiz start:', {
-          status: response.status,
-          error: errorData
-        });
       }
     } catch (error) {
-      console.error('❌ Error recording quiz start:', error);
     }
   }, [user, difficulty, environment]);
 
@@ -169,7 +163,6 @@ function QuizPageContent() {
       const data = await response.json();
       
       if (data.error) {
-        console.error('TTS API 에러:', data.error);
         setIsPlayingTTS(false);
         return;
       }
@@ -178,7 +171,6 @@ function QuizPageContent() {
         const audio = new Audio();
         
         const playbackTimeout = setTimeout(() => {
-          console.warn('TTS playback timeout');
           audio.pause();
           setIsPlayingTTS(false);
         }, 10000);
@@ -190,7 +182,6 @@ function QuizPageContent() {
         };
         
         audio.onerror = (e) => {
-          console.error('Audio playback error:', e);
           clearTimeout(playbackTimeout);
           setIsPlayingTTS(false);
         };
@@ -198,7 +189,6 @@ function QuizPageContent() {
         audio.onloadeddata = () => {
           // 로드되면 바로 재생 시도
           audio.play().catch((playError) => {
-            console.error('Play failed:', playError);
             setIsPlayingTTS(false);
           });
         };
@@ -211,7 +201,6 @@ function QuizPageContent() {
         throw new Error('No audio URL received');
       }
     } catch (error) {
-      console.error('TTS 재생 실패:', error);
       setIsPlayingTTS(false);
     }
   };
@@ -219,7 +208,6 @@ function QuizPageContent() {
   const tryWebSpeechAPI = (text: string): boolean => {
     // Web Speech API 지원 확인
     if (!('speechSynthesis' in window)) {
-      console.log('Web Speech API not supported');
       return false;
     }
 
@@ -238,7 +226,6 @@ function QuizPageContent() {
       };
       
       utterance.onerror = (event) => {
-        console.error('Web Speech API error:', event.error);
         setIsPlayingTTS(false);
         return false;
       };
@@ -246,7 +233,6 @@ function QuizPageContent() {
       speechSynthesis.speak(utterance);
       return true;
     } catch (error) {
-      console.error('Web Speech API failed:', error);
       return false;
     }
   };
@@ -326,7 +312,6 @@ function QuizPageContent() {
         setAnswerAnalysis(data.analysis);
       }
     } catch (error) {
-      console.error('Error analyzing answer:', error);
       // 에러가 발생해도 사용자 경험에 영향을 주지 않도록 조용히 처리
     } finally {
       setIsAnalyzing(false);
@@ -335,21 +320,12 @@ function QuizPageContent() {
 
   const saveProgressToSupabase = async (correctCount: number, totalQuestions: number) => {
     if (!user || !difficulty || !environment) {
-      console.warn('Cannot save progress: missing user, difficulty, or environment');
       return;
     }
 
-    console.log('Saving progress:', {
-      user_id: user.id,
-      difficulty,
-      environment,
-      correct_answers: correctCount,
-      total_questions: totalQuestions
-    });
 
     try {
       // 퀴즈 완료 - 기록은 시작 시점에 이미 저장됨
-      console.log('✅ Quiz completed with score:', correctCount);
 
       // 2. 기존 user_progress 테이블 업데이트 (랭킹용)
       const { data: existingProgress, error: selectError } = await supabase
@@ -360,7 +336,6 @@ function QuizPageContent() {
         .single();
 
       if (selectError && selectError.code !== 'PGRST116') {
-        console.error('❌ Error fetching existing progress:', selectError);
         return;
       }
 
@@ -370,11 +345,6 @@ function QuizPageContent() {
         // 기존 기록이 있으면 점수 누적
         const updatedScore = existingProgress.score + newScore;
         
-        console.log('📈 Updating existing progress:', {
-          previous_score: existingProgress.score,
-          new_score: newScore,
-          total_score: updatedScore
-        });
         
         const { data, error } = await supabase
           .from('user_progress')
@@ -387,14 +357,11 @@ function QuizPageContent() {
           .select();
 
         if (error) {
-          console.error('❌ Error updating progress:', error);
           return;
         }
 
-        console.log('✅ Progress updated successfully:', data[0]);
       } else {
         // 새로운 기록 생성
-        console.log('🆕 Creating new progress record for user:', user.id);
         
         const { data, error } = await supabase
           .from('user_progress')
@@ -408,17 +375,14 @@ function QuizPageContent() {
           .select();
 
         if (error) {
-          console.error('❌ Error creating progress:', error);
           return;
         }
 
-        console.log('✅ New progress created successfully:', data[0]);
       }
       
       // 점수 저장 후 랭킹 정보 가져오기
       await fetchRankingData();
     } catch (error) {
-      console.error('❌ Error saving progress:', error);
     }
   };
 
@@ -433,10 +397,8 @@ function QuizPageContent() {
         setRankingData(data.data);
         setUserRank(data.user_rank);
       } else {
-        console.error('❌ Failed to fetch ranking:', data.error);
       }
     } catch (error) {
-      console.error('❌ Network error fetching ranking:', error);
     }
   };
 

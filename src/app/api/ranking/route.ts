@@ -49,7 +49,6 @@ export async function GET(request: NextRequest) {
       
       // 테이블이 존재하지 않는 경우 처리
       if (error && (error.message?.includes('relation') || error.code === 'PGRST116')) {
-        console.log('user_progress 테이블이 존재하지 않습니다:', error);
         return NextResponse.json({
           success: true,
           data: [],
@@ -60,7 +59,6 @@ export async function GET(request: NextRequest) {
       }
 
       if (error) {
-        console.error('Error fetching ranking:', error);
         return NextResponse.json(
           { error: '랭킹 조회 중 오류가 발생했습니다.' },
           { status: 500 }
@@ -97,7 +95,6 @@ export async function GET(request: NextRequest) {
       
       // 테이블이 존재하지 않는 경우 처리
       if (error && (error.message?.includes('relation') || error.code === 'PGRST116')) {
-        console.log('user_progress 테이블이 존재하지 않습니다:', error);
         return NextResponse.json({
           success: true,
           data: {},
@@ -107,7 +104,6 @@ export async function GET(request: NextRequest) {
       }
 
       if (error) {
-        console.error('Error fetching all rankings:', error);
         return NextResponse.json(
           { error: '랭킹 조회 중 오류가 발생했습니다.' },
           { status: 500 }
@@ -150,7 +146,6 @@ export async function GET(request: NextRequest) {
       });
     }
   } catch (error) {
-    console.error('API Error:', error);
     return NextResponse.json(
       { error: '서버 오류가 발생했습니다.' },
       { status: 500 }

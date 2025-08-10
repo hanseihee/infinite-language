@@ -54,8 +54,8 @@ Keep explanations simple and encouraging. Use Korean language.`;
         },
         { role: 'user', content: prompt }
       ],
-      model: 'gpt-4o-mini',
-      temperature: 0.3, // 낮은 temperature로 일관된 분석
+      model: 'gpt-5-mini',
+      // GPT-5 models only support default temperature (1.0)
       response_format: { type: "json_object" }
     });
 

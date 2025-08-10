@@ -62,7 +62,6 @@ export async function GET(request: NextRequest) {
       error = null;
     } else {
       // quiz_attempts 테이블이 없거나 오류 발생시 user_progress 사용
-      console.log('quiz_attempts 테이블 사용 불가, user_progress 사용:', quizError.message);
       
       const { data: progressData, error: progressError } = await supabaseAdmin
         .from('user_progress')
@@ -76,7 +75,6 @@ export async function GET(request: NextRequest) {
     }
 
     if (error) {
-      console.error('Error fetching quiz attempts:', error);
       return NextResponse.json(
         { error: 'Failed to fetch quiz attempts' },
         { status: 500 }
@@ -98,7 +96,6 @@ export async function GET(request: NextRequest) {
     });
 
   } catch (error) {
-    console.error('Error in quiz-attempts API:', error);
     return NextResponse.json(
       { error: 'Internal server error' },
       { status: 500 }
@@ -125,14 +122,6 @@ export async function POST(request: NextRequest) {
     const today = koreaTime.toISOString().split('T')[0];
 
     // quiz_attempts 테이블 사용 시도
-    console.log('💾 Attempting to save quiz attempt:', {
-      user_id,
-      difficulty,
-      environment,
-      score,
-      total_questions,
-      attempt_date: today
-    });
 
     const { data, error } = await supabaseAdmin
       .from('quiz_attempts')
@@ -147,7 +136,6 @@ export async function POST(request: NextRequest) {
       .select();
 
     if (error) {
-      console.error('❌ Error saving quiz attempt:', error);
       return NextResponse.json(
         { 
           error: 'Failed to save quiz attempt',
@@ -158,7 +146,6 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    console.log('✅ Quiz attempt saved successfully:', data);
 
     return NextResponse.json({
       success: true,
@@ -166,7 +153,6 @@ export async function POST(request: NextRequest) {
     });
 
   } catch (error) {
-    console.error('Error in POST quiz-attempts API:', error);
     return NextResponse.json(
       { error: 'Internal server error' },
       { status: 500 }
