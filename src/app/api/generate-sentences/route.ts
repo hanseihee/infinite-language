@@ -83,7 +83,7 @@ Format: [{"sentence":"...", "korean":"..."}]`;
         },
         { role: 'user', content: prompt }
       ],
-      model: 'gpt-5-nano'
+      model: 'gpt-5'
       // GPT-5 models only support default temperature (1.0)
     });
 
