@@ -12,7 +12,7 @@
     "@supabase/supabase-js": "^2.52.0",
     "@vercel/analytics": "^1.5.0",
     "google-tts-api": "^2.0.2",
-    "next": "15.4.2",
+    "next": "15.4.10",
     "next-google-adsense": "^1.0.13",
     "openai": "^5.10.1",
     "react": "19.1.0",
